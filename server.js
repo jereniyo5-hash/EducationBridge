@@ -39,7 +39,7 @@ pool.connect((err, client, release) => {
     if (err) {
       return console.error('Error executing query', err.stack);
     }
-    console.log('Connected to Neon Database successfully.');
+    console.log('Connected to Render Database successfully.');
   });
 });
 
@@ -382,6 +382,14 @@ app.post('/api/testimonials', async (req, res) => {
         console.error('Error posting testimonial:', e);
         res.status(500).json({ error: 'Failed to submit comment' });
     }
+});
+
+// Serve frontend static files
+app.use(express.static(path.join(process.cwd(), 'dist')));
+
+// Fallback for React Router
+app.use((req, res) => {
+    res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
 
 app.listen(port, () => {
