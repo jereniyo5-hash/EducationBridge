@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ASSESSMENT FOR SECONDARY SCHOOLS and primary</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        .level-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            padding: 2rem 0 1rem;
+        }
+        .level-tab {
+            background: var(--color-bg2);
+            color: var(--color-white);
+            border: 2px solid transparent;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 400ms ease;
+        }
+        .level-tab:hover, .level-tab.active {
+            background: var(--color-primary);
+            border-color: var(--color-warning);
+            color: var(--color-warning);
+        }
+        .level-group {
+            display: none;
+        }
+        .level-group.active {
+            display: block;
+        }
+        .level-header {
+            text-align: center;
+            padding: 1.5rem 0 0.5rem;
+            color: var(--color-warning);
+            font-size: 1.4rem;
+        }
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+        .subject-card {
+            background: var(--color-bg1);
+            text-align: center;
+            border: 1px solid transparent;
+            transition: all 400ms ease;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .subject-card:hover {
+            background: transparent;
+            border-color: var(--color-primary);
+        }
+        .subject-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        .subject-card-info {
+            padding: 1.2rem;
+        }
+        .subject-card-info h4 {
+            margin-bottom: 0.6rem;
+            font-size: 1rem;
+            color: var(--color-white);
+        }
+        .subject-card-info p {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+        }
+        .btn-assess {
+            display: inline-block;
+            background: var(--color-warning);
+            color: var(--color-black);
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.3rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 400ms ease;
+            text-decoration: none;
+        }
+        .btn-assess:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        @media screen and (max-width: 1024px) {
+            .subjects-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media screen and (max-width: 600px) {
+            .subjects-grid { grid-template-columns: 1fr; }
+            .level-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav_container">
+            <a href="hometab.html"><img src="../media/logo.png" style="border-radius:50%;margin-top:10px;height:50px;width:50px;" alt="logo"><h4>Education Bridge</h4></a>
+            <ul class="nav_menu">
+                <li><a href="hometab.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="subject.html">Subject</a></li>
+            </ul>
+            <button id="open-menu-btn"><i class="uil uil-list-ul"></i></button>
+            <button id="close-menu-btn"><i class="uil uil-multiply"></i></button>
+        </div>
+    </nav>
+
+    <section style="padding-top:7rem;">
+        <div class="container">
+            <h2 class="section-title">Choose Your Class & Subject</h2>
+            <p style="text-align:center;color:rgba(255,255,255,0.7);margin-bottom:1rem;">Select your class level, then pick a subject to start your end unit assessment.</p>
+
+            <div class="level-tabs" id="levelTabs"></div>
+            <div id="levelContent"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer_container">
+            <div class="footer_1">
+                <a href="hometab.html" class="footer_logo"><h4>ASSESSMENT</h4></a>
+                <p>This site contains assessments from Primary 1 up to Senior 6.</p>
+            </div>
+            <div class="footer_2">
+                <h4>Permalinks</h4>
+                <ul class="permalinks">
+                    <li><a href="hometab.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="subject.html">Subject</a></li>
+                </ul>
+            </div>
+            <div class="footer_3">
+                <h4>Privacy</h4>
+                <ul class="privacy">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms and Conditions</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer_4">
+                <h4>Contact us</h4>
+                <p>+250787065284</p>
+                <p>niyogisubizojeremie73@gmail.com</p>
+                <ul class="footer_socials">
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer_copyright">
+            <small>Copyright &copy; NIJE ASSESSMENT</small>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/levels.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const subjectImages = {
+            "Mathematics": "../media/math.jpg",
+            "English": "../media/eng.jpg",
+            "Kinyarwanda": "../media/hist.jpg",
+            "Elementary Science & Technology": "../media/science.jpg",
+            "Elementary Science & Technology (SET)": "../media/science.jpg",
+            "Social Studies": "../media/geo.jpg",
+            "French": "../media/allin.jpg",
+            "Biology": "../media/science.jpg",
+            "Chemistry": "../media/science.jpg",
+            "Physics": "../media/science.jpg",
+            "Geography": "../media/geo.jpg",
+            "History": "../media/hist.jpg",
+            "Entrepreneurship": "../media/ent.jpg",
+            "Computer Science": "../media/comp.jpg",
+            "Economics": "../media/economics.jpg",
+            "Integrated Science": "../media/science.jpg",
+            "General Studies & Communication": "../media/allin.jpg"
+        };
+
+        function slugify(str) {
+            return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+
+        const tabsEl = document.getElementById('levelTabs');
+        const contentEl = document.getElementById('levelContent');
+        const levelKeys = Object.keys(LEVELS);
+
+        levelKeys.forEach((level, i) => {
+            // Tab button
+            const btn = document.createElement('button');
+            btn.className = 'level-tab' + (i === 0 ? ' active' : '');
+            btn.textContent = level;
+            btn.dataset.level = level;
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.level-group').forEach(g => g.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('group-' + slugify(level)).classList.add('active');
+            });
+            tabsEl.appendChild(btn);
+
+            // Content group
+            const group = document.createElement('div');
+            group.className = 'level-group' + (i === 0 ? ' active' : '');
+            group.id = 'group-' + slugify(level);
+
+            const heading = document.createElement('h3');
+            heading.className = 'level-header';
+            heading.textContent = level + ' — End Unit Assessments';
+            group.appendChild(heading);
+
+            const grid = document.createElement('div');
+            grid.className = 'subjects-grid';
+
+            LEVELS[level].subjects.forEach(subject => {
+                const img = subjectImages[subject] || '../media/allin.jpg';
+                const card = document.createElement('article');
+                card.className = 'subject-card';
+                card.innerHTML = `
+                    <img src="${img}" alt="${subject}">
+                    <div class="subject-card-info">
+                        <h4>${subject}</h4>
+                        <p>End unit assessment for ${level} — ${subject}. Practice all units to prepare for your exams.</p>
+                        <a href="km.html?level=${encodeURIComponent(level)}&subject=${encodeURIComponent(subject)}" class="btn-assess">Start Assessment</a>
+                    </div>`;
+                grid.appendChild(card);
+            });
+
+            group.appendChild(grid);
+            contentEl.appendChild(group);
+        });
+    </script>
+</body>
+</html>

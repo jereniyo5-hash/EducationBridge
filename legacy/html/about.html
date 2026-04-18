@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ASSESSMENT FOR SECONDARY SCHOOLS and primary</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <style type="text/css">
+        body {
+            background: linear-gradient(to right, violet, indigo, violet); /* Corrected gradient direction */
+        }
+        h1 {
+            color: black;
+        }
+
+        .welcome{
+          font-family: "Open Sans", sans-serif;
+          font-size: 18px;
+        }
+        /* Basic styling for JavaScript feedback messages for better visibility */
+        #formMessage {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none; /* Hidden by default, shown by JS */
+        }
+        #formMessage.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #formMessage.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* --- Testimonial Animation Specific CSS --- */
+        .testimonial-item {
+            /* Ensure items have a fixed height if content varies much */
+            min-height: 180px; /* Adjust as needed */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            background-color: black; /* Example background */
+            border-radius: 40px;
+            box-shadow: 0 4px 8px red;
+            color: yellow;
+        }
+        #features{
+          min-height: 400px; /* Adjust as needed */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            background-color: transparent; /* Example background */
+            border-radius: 40px;
+            box-shadow: 0 4px 8px red;
+            color: white;
+            
+
+        }
+
+        /* Initial state for elements to animate */
+        .testimonial-item p,
+        .testimonial-item .learner-name,
+        .testimonial-item .action-icon {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .testimonial-item .action-icon {
+            font-size: 3rem; /* Make icon prominent */
+            margin-bottom: 15px;
+            color: #007bff; /* Primary color */
+            transform: scale(0.5); /* Start small */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        /* Animated state when slide is active (managed by JS adding/removing this class) */
+        .testimonial-item.is-active p,
+        .testimonial-item.is-active .learner-name {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .testimonial-item.is-active .action-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Delay for sequential animation */
+        .testimonial-item.is-active p { transition-delay: 0.1s; }
+        .testimonial-item.is-active .learner-name { transition-delay: 0.3s; }
+        .testimonial-item.is-active .action-icon { transition-delay: 0s; } /* Icon appears first */
+
+
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav_container">
+            <a href="hometab.html"> <img src="../media/logo.png" style="border-radius: 50%; margin-top:10px height: 100px; width: 50px;" alt="logo image" ><h4>Education bridge</h4></a>
+            <ul class="nav_menu">
+                <li><a href="hometab.html">Home</a></li>
+                <li> <a href="about.html">About</a></li>
+                <li> <a href="contact.html">Contact</a></li>
+                <li><a href="subject.html">Subject</a></li>
+            </ul>
+            <button id="open-menu-btn"> <i class="uil uil-list-ul"></i></button>
+            <button id="close-menu-btn"><i class="uil uil-multiply"></i> </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="hero">
+        <div class="welcome">
+            <h2>Bridging Knowledge, Building Future</h2>
+            <p>Ready to tap into your potential and join an active learning community? Our site is an active, interactive environment in which you can construct knowledge actively, engage with peers, and receive the help you require in order to truly grasp new concepts. Don't passively receive information; start your path of active discovery and transform the way you learn today by exploring all our platform has to offer!</p>
+          </div>
+           <a href="subject.html"> <button id="startLearningBtn" class="btn">Start Learning Today</button></a>
+        </section>
+
+        <section id="features">
+            <h3>What We Offer</h3>
+            <div>
+                <div class="welcome">
+                    <h4>Interactive Lessons</h4>
+                    <p>Engage with dynamic content, quizzes, and practical exercises.</p>
+                </div>
+                <div class="welcome">
+                    <h4>Personalized Paths</h4>
+                    <p>Tailored learning journeys adapted to your pace and goals.</p>
+                </div>
+                <div class="welcome">
+                    <h4>Global Community</h4>
+                    <p>Connect with learners and mentors from around the world.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="courses">
+            <h3>Our Popular Courses</h3>
+            <div>
+                <div data-course-id="math101">
+                    <h4>Mathematics Fundamentals</h4>
+                    <p>Master the basics of algebra, geometry, and calculus.</p>
+                    <span>Difficulty: Easy</span>
+                    <button class="enroll-button btn">Enroll Now</button>
+                </div>
+                <div data-course-id="prog202">
+                    <h4>Programming Essentials (Python)</h4>
+                    <p>Learn to code with Python from scratch to building small apps.</p>
+                    <span>Difficulty: Medium</span>
+                    <button class="enroll-button btn">Enroll Now</button>
+                </div>
+                <div data-course-id="sci303">
+                    <h4>Science Explorations (Biology)</h4>
+                    <p>Dive into the fascinating world of biology and life sciences.</p>
+                    <span>Difficulty: Hard</span>
+                    <button class="enroll-button btn">Enroll Now</button>
+                </div>
+            </div>
+            <div>
+                <button class="view-all-courses btn">View All Courses</button>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <h3>What Our Learners Say</h3>
+            <div class="testimonial-slider swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="testimonial-item swiper-slide">
+                        <i class="uil uil-chart-line action-icon"></i> <p>"EduBridge transformed my understanding of mathematics. The interactive lessons made complex topics easy to grasp!"</p>
+                        <p class="learner-name">- Alice Johnson, **Achieved Mastery**</p>
+                    </div>
+                    <div class="testimonial-item swiper-slide">
+                        <i class="uil uil-brackets-curly action-icon"></i> <p>"I never thought I could learn to code, but EduBridge's Python course was incredibly engaging and well-structured."</p>
+                        <p class="learner-name">- Bob Williams, **Built His First App**</p>
+                    </div>
+                    <div class="testimonial-item swiper-slide">
+                        <i class="uil uil-users-alt action-icon"></i> <p>"The community support and personalized learning paths are truly exceptional. Highly recommend!"</p>
+                        <p class="learner-name">- Carol Davis, **Joined a Study Group**</p>
+                    </div>
+                     <div class="testimonial-item swiper-slide">
+                        </i> <p>"As an educator, I find EduBridge's resources invaluable for preparing my students for their exams. The structured content is a game-changer!"</p>
+                        <p class="learner-name">- David Lee, **Empowering Next Gen**</p>
+                    </div>
+                     <div class="testimonial-item swiper-slide">
+                        <i class="uil uil-graduation-cap action-icon"></i> <p>"My child's grades have significantly improved since using EduBridge. It's truly an investment in their future!"</p>
+                        <p class="learner-name">- Sarah Kim, **Proud Parent**</p>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h3>Get In Touch</h3>
+            <p>Have questions or need assistance? Reach out to us!</p>
+            <form id="contactForm">
+                <div>
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="email">Your Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+                <div id="formMessage"></div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer_container">
+            <div class="footer_1">
+                <a href="hometab.html" class="footer_logo"><h4>ASSESSMENT</h4></a>
+                <p>This site contains assessments for P6 (Primary 6), Senior 3, and Senior 6.</p>
+            </div>
+            <div class="footer_2">
+                <h4>Permalinks</h4>
+                <ul class="permalinks">
+                    <li><a href="hometab.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="subject.html">Subject</a></li>
+                </ul>
+            </div>
+            <div class="footer_3">
+                <h4>Privacy</h4>
+                <ul class="privacy">
+                    <li><a href="#">Privacy Policy</a> </li>
+                    <li><a href="#">Terms and Conditions</a> </li>
+                    <li><a href="#">Refund Policy</a> </li>
+                </ul>
+            </div>
+            <div class="footer_4">
+                <h4>Contact us</h4>
+                <p>+250787065284</p>
+                <p>niyogisubizojeremie73@gmail.com</p>
+                <ul class="footer_socials">
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer_copyright">
+            <small>Copyright &copy; NIJE ASSESSMENT</small>
+        </div>
+    </footer>
+
+    <audio id="confirmationSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
+
+    <script src="./main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script src="../js/about.js"></script>
+</body>
+</html>

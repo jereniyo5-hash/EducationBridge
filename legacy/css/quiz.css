@@ -1,0 +1,82 @@
+.start-btn{
+    width: 200px;
+    height: 55px;
+    background: #c40094;
+    border: 2px solid #fff;
+    outline: none;
+    border: 10px;
+    box-shadow: 0 0 15px #c40094;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: 2px;
+    cursor: pointer; 
+    transform: -5s;
+}
+.start-btn:hover{
+    background: #09001d;
+    box-shadow: none;
+}
+.g-info{
+    position: absolute;
+    top:50% ;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px;
+    height:75vh;
+    background: #fff  ;
+    border-radius: 12px;
+    padding: 100px 120px;
+    transition: .3s ease;
+   
+}
+
+
+.g-info h2{
+    font-size: 50px;
+    color: #c40094;
+    margin-bottom: 5rem;
+}
+.g-info .info{
+    display: inline-block;
+    font-size: 20px;
+    color: #333; 
+    font-weight: 500;
+    margin: 4px 0;
+    
+}
+.g-info .btn-group{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #999;
+    margin-top: 10px;
+    padding: 10px 0;
+      
+}
+.g-info .btn-group .info-btn{
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 140px;
+    height: 55px;
+    background: #c40094;
+    border: 2px solid #c40094;
+    outline: none;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 600;
+    margin: 10px 10px;
+    box-shadow: 0 0 10px rgba(0,0,0, .1);  
+    cursor: pointer; 
+    transition: -5s;
+
+}
+
+.g-info .btn-group .info-btn:nth-child(1):hover{
+
+    background: #c40094;
+    color:rgb(183, 255, 0);
+}
+

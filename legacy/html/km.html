@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Assessment</title>
+<style type="text/css">
+    body {
+    font-family: 'Arial', sans-serif;
+    background: url('https://images.unsplash.com/photo-1505740420928-5e560ba40e5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d29yayUyMHNwYWNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    font-size: 36px;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(235, 240, 241, 0.9); /* Semi-transparent white */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(240, 64, 6, 0.2);
+    text-align: center;
+    
+}
+
+.quiz-box {
+    position: relative;
+}
+
+#quiz-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+#question-container {
+    margin-bottom: 20px;
+}
+
+#question {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #34495e;
+}
+
+#options-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+#options-container button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#options-container button:hover {
+    background-color: #2980b9;
+}
+
+#options-container button.correct {
+    background-color: #2ecc71;
+    color: white;
+}
+
+#options-container button.incorrect {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#timer {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #e67e22;
+}
+
+#next-btn {
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+#next-btn:hover {
+    background-color: #219653;
+}
+
+#score-container {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+    color: #8e44ad;
+}
+
+.button-container button {
+    background-color: #9b59b6;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
+}
+
+.button-container button:hover {
+    background-color: #8e44ad;
+}
+
+.progress-circle-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 20px auto;
+}
+
+.progress-circle {
+    width: 120px;
+    height: 120px;
+}
+
+.progress-circle-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    color: #333;
+}
+
+#progress-circle-bar {
+    transition: stroke-dashoffset 0.3s ease;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+#congratulations {
+    text-align: center;
+    padding: 20px;
+    background-color: #2ecc71;
+    color: white;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.overlay-content {
+    background-color: black;
+    padding-left: 60px;
+    border-radius: 5px;
+    width: 100%;
+    height: 90vh;
+    max-width: 600px;
+    text-align: left;
+    color: white;
+}
+
+#answer-list {
+    list-style: none;
+    padding: 0;
+}
+
+#answer-list li {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+#answer-list li strong {
+    color: #2980b9;
+}
+
+#close-answers-btn {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#close-answers-btn:hover {
+    background-color: #2980b9;
+}
+
+.flower-animation {
+    font-size: 3em;
+    animation: flowerFall 5s linear infinite;
+}
+
+
+@keyframes flowerFall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(300px) rotate(360deg); opacity: 0; }
+}
+
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="quiz-box">
+            <h1 id="quiz-title">End unit1 Assessment math p6 </h1>
+            <div id="question-container">
+                <div id="question"></div>
+                <div id="options-container"></div>
+            </div>
+
+            <div id="timer">Time Left: <span id="time-remaining">5:00</span></div>
+            <button id="next-btn">Next</button>
+            <div id="score-container">Score: <span id="score">0%</span></div>
+
+            <div class="button-container">
+                <button id="show-answers-btn">Show Answers</button>
+                <button id="replay-btn">Replay</button>
+                <button id="exit-btn">Exit</button>
+            </div>
+
+            <div class="progress-circle-container">
+                <div class="progress-circle">
+                    <div class="progress-circle-inner"></div>
+                    <svg width="120" height="120">
+                        <circle cx="60" cy="60" r="55" stroke="#ccc" stroke-width="6" fill="none"></circle>
+                        <circle cx="60" cy="60" r="55" stroke="#4CAF50" stroke-width="6" fill="none" stroke-dasharray="345.575" stroke-dashoffset="345.575" id="progress-circle-bar"></circle>
+                    </svg>
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+
+            <div id="congratulations" class="hidden">
+                <h2>Congratulations!</h2>
+                <p>You passed the quiz!</p>
+                <div class="flower-animation">🌸</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="answer-overlay" class="overlay">
+        <div class="overlay-content">
+            <h2>Correct Answers</h2>
+            <ul id="answer-list"></ul>
+            <button id="close-answers-btn">Close</button>
+        </div>
+    </div>
+
+    <script >
+        const questions = [
+   
+    {
+        question: "1a. Add: 235 + 47.",
+        options: ["272", "282", "292", "302"],
+        correctAnswer: "282"
+    },
+    {
+        question: "1b. Subtract: 89 - 34.",
+        options: ["55", "45", "65", "35"],
+        correctAnswer: "55"
+    },
+    {
+        question: "1c. Multiply: 15 x 6.",
+        options: ["80", "90", "70", "100"],
+        correctAnswer: "90"
+    },
+    {
+        question: "1d. Divide: 72 ÷ 8.",
+        options: ["7", "8", "9", "6"],
+        correctAnswer: "9"
+    },
+    {
+        question: "2a. What is 1/2 of 10 oranges?",
+        options: ["3 oranges", "4 oranges", "5 oranges", "6 oranges"],
+        correctAnswer: "5 oranges"
+    },
+    {
+        question: "2b. If you have 20 pens and give away 5, how many do you have left?",
+        options: ["10 pens", "15 pens", "25 pens", "5 pens"],
+        correctAnswer: "15 pens"
+    }
+
+   
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let timeLeft = 300; // 5 minutes in seconds
+let timerInterval;
+
+const questionElement = document.getElementById("question");
+const optionsContainer = document.getElementById("options-container");
+const timerElement = document.getElementById("time-remaining");
+const nextButton = document.getElementById("next-btn");
+const scoreElement = document.getElementById("score");
+const showAnswersButton = document.getElementById("show-answers-btn");
+const replayButton = document.getElementById("replay-btn");
+const exitButton = document.getElementById("exit-btn");
+const progressCircleBar = document.getElementById("progress-circle-bar");
+const progressText = document.getElementById("progress-text");
+const congratulationsElement = document.getElementById("congratulations");
+const answerOverlay = document.getElementById("answer-overlay");
+const answerList = document.getElementById("answer-list");
+const closeAnswersButton = document.getElementById("close-answers-btn");
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    timeLeft = 300;
+    scoreElement.textContent = "0%";
+    congratulationsElement.classList.add("hidden");
+    updateProgressCircle(0);
+    showQuestion();
+    startTimer();
+}
+
+function showQuestion() {
+    const question = questions[currentQuestionIndex];
+    questionElement.innerHTML = question.question;
+    optionsContainer.innerHTML = "";
+
+    question.options.forEach(option => {
+        const button = document.createElement("button");
+        button.innerHTML = option;
+        button.addEventListener("click", () => selectAnswer(option));
+        optionsContainer.appendChild(button);
+    });
+}
+
+function selectAnswer(selectedOption) {
+    const question = questions[currentQuestionIndex];
+    const buttons = optionsContainer.querySelectorAll("button");
+
+    buttons.forEach(button => {
+        button.disabled = true;
+        if (button.innerHTML === question.correctAnswer) {
+            button.classList.add("correct");
+        } else if (button.innerHTML === selectedOption) {
+            button.classList.add("incorrect");
+        }
+    });
+
+    if (selectedOption === question.correctAnswer) {
+        score++;
+    }
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        endQuiz();
+    }
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (timeLeft <= 0) {
+            endQuiz();
+        }
+    }, 1000);
+}
+
+function endQuiz() {
+    clearInterval(timerInterval);
+    const percentage = (score / questions.length) * 100;
+    scoreElement.textContent = percentage.toFixed(0) + "%";
+    updateProgressCircle(percentage);
+
+    if (percentage >= 50) {
+        congratulationsElement.classList.remove("hidden");
+    }
+}
+
+function updateProgressCircle(percentage) {
+    const circumference = 2 * Math.PI * 55;
+    const offset = circumference - (percentage / 100) * circumference;
+    progressCircleBar.style.strokeDashoffset = offset;
+    progressText.textContent = percentage.toFixed(0) + "%";
+}
+
+function showCorrectAnswers() {
+    if (currentQuestionIndex === questions.length) {
+        answerList.innerHTML = "";
+        questions.forEach(question => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<strong>${question.question}</strong>: ${question.correctAnswer}`;
+            answerList.appendChild(listItem);
+        });
+        answerOverlay.style.display = "flex";
+        answerOverlay.style.background = "rgba(0, 0, 0, 0.8)"; // Semi-transparent black
+    }
+}
+
+function closeCorrectAnswers() {
+    answerOverlay.style.display = "none";
+}
+
+function replayQuiz() {
+    congratulationsElement.classList.add("hidden");
+    startQuiz();
+}
+
+function exitQuiz() {
+    // You can add any exit logic here, like redirecting to a different page.
+    window.location.href = 'hometab.html';
+}
+
+nextButton.addEventListener("click", nextQuestion);
+showAnswersButton.addEventListener("click", showCorrectAnswers);
+replayButton.addEventListener("click", replayQuiz);
+exitButton.addEventListener("click", exitQuiz);
+closeAnswersButton.addEventListener("click", closeCorrectAnswers);
+
+// Initialize the quiz on page load
+startQuiz();
+
+function endQuiz() {
+    clearInterval(timerInterval);
+    const percentage = (score / questions.length) * 100;
+    scoreElement.textContent = percentage.toFixed(0) + "%";
+    updateProgressCircle(percentage);
+
+    // Show the current question number out of the total
+    const finalQuestionNumber = currentQuestionIndex; // currentQuestionIndex is already at the total number of questions
+    alert(`You have completed the quiz!\nFinal Score: ${score} out of ${questions.length}`);
+
+    if (percentage >= 50) {
+        congratulationsElement.classList.remove("hidden");
+    }
+}
+    </script>
+</body>
+</html>

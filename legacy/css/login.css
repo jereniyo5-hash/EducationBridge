@@ -1,0 +1,154 @@
+/* General body styling for a clean background and centered content */
+body {
+    font-family: 'Poppins', sans-serif; /* Use your specified font */
+    background-color: #f0f2f5; /* Light grey background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    margin: 0;
+    padding: 20px; /* Add some padding for smaller screens */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+/* Container for the entire login section */
+.container.login {
+    background-color: #ffffff; /* White background for the form container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    padding: 30px;
+    max-width: 450px; /* Max width for the form */
+    width: 100%; /* Make it responsive */
+    text-align: center;
+}
+
+/* Header for the login form */
+.lpg h1 {
+    color: #333; /* Darker text for the heading */
+    margin-bottom: 25px;
+    font-size: 2.2em; /* Slightly larger heading */
+    font-weight: 700;
+}
+
+/* Styling for the login message (PHP output) */
+.lpg p {
+    margin-top: -15px; /* Adjust if needed */
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    font-weight: 500;
+    /* Colors for messages are typically set inline by PHP or a specific class */
+    /* Example: p.success { color: green; } p.error { color: red; } */
+}
+
+/* Table styling for layout */
+.lpg table {
+    width: 100%;
+    border-collapse: collapse; /* Remove double borders */
+    margin-top: 20px;
+}
+
+.lpg table tr {
+    margin-bottom: 15px; /* Spacing between rows */
+}
+
+.lpg table td {
+    padding: 10px 0; /* Vertical padding for table cells */
+    text-align: left;
+    vertical-align: top; /* Align content to the top */
+}
+
+/* Label styling */
+.lpg label {
+    display: block; /* Make labels take full width */
+    color: #555; /* Slightly softer color for labels */
+    font-weight: 600;
+    margin-bottom: 8px; /* Space below label */
+    font-size: 0.95em;
+}
+
+/* Input and Select field styling */
+.lpg input[type="text"],
+.lpg input[type="password"],
+.lpg select {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 12px 10px;
+    margin-bottom: 15px; /* Space below each input */
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 8px; /* Slightly more rounded inputs */
+    font-size: 1em;
+    color: #333;
+    background-color: #f9f9f9; /* Light background for inputs */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lpg input[type="text"]::placeholder,
+.lpg input[type="password"]::placeholder {
+    color: #aaa; /* Lighter placeholder text */
+}
+
+.lpg input[type="text"]:focus,
+.lpg input[type="password"]:focus,
+.lpg select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Soft blue glow on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Specific styling for the role select dropdown */
+#role_select {
+    appearance: none; /* Remove default dropdown arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.1%203.4-14.8%208.9-2.7%205.5-2.2%2011.8%201.3%2016.9l130.3%20130.3c3.4%203.4%208%205.1%2012.5%205.1s9.1-1.7%2012.5-5.1L285.7%2086.3c3.5-5.1%204-11.4%201.3-16.9z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow icon */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px; /* Make space for the arrow */
+}
+
+
+/* Button styling */
+#login_submit_btn {
+    width: 100%;
+    padding: 14px 20px;
+    background-color: #007bff; /* Primary blue button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px; /* Space above the button */
+}
+
+#login_submit_btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+#login_submit_btn:active {
+    transform: translateY(0); /* Press effect */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+    .container.login {
+        padding: 20px;
+        margin: 10px; /* Smaller margin for very small screens */
+    }
+
+    .lpg h1 {
+        font-size: 1.8em;
+    }
+
+    .lpg table td {
+        display: block; /* Stack labels and inputs on small screens */
+        width: 100%;
+        text-align: center; /* Center content when stacked */
+    }
+
+    .lpg label {
+        text-align: center; /* Center labels too */
+    }
+}
