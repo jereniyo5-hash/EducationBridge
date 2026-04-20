@@ -49,7 +49,7 @@ const dbHost = dbUrl ? dbUrl.split('@')[1]?.split('/')[0] : 'unknown';
 console.log(`Attempting to connect to database host: ${dbHost}`);
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
   ssl: {
     rejectUnauthorized: false
   },
