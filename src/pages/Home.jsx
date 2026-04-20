@@ -233,7 +233,7 @@ const Home = ({ setIsChatOpen }) => {
                                 <article className="testimonial-card interactive-card">
                                     <div className="avatar">
                                         {t.avatar_url ? (
-                                            <img src={t.avatar_url} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                            <img src={t.avatar_url.startsWith('http') ? t.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.avatar_url}`} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                                         ) : (
                                             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e0e0e0', color: '#555', fontSize: '1.5rem', fontWeight: 'bold', borderRadius: '50%' }}>
                                                 {t.name.charAt(0).toUpperCase()}

@@ -60,7 +60,7 @@ const Navbar = ({ setIsChatOpen }) => {
                     {user && (
                         <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {user.avatar_url && (
-                                <img src={user.avatar_url} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #6c63ff' }} />
+                                <img src={user.avatar_url.startsWith('http') ? user.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${user.avatar_url}`} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #6c63ff' }} />
                             )}
                             <span className="nav-btn-link logout-btn" onClick={() => {localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href='/';}}>Logout</span>
                         </li>

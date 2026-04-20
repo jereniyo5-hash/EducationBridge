@@ -59,7 +59,7 @@ const Dashboard = () => {
                     <p>Track your academic journey and view your completed assessments.</p>
                 </div>
                 {userState.avatar_url ? (
-                    <img src={userState.avatar_url} alt="Profile" className="dashboard-avatar" />
+                    <img src={userState.avatar_url.startsWith('http') ? userState.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${userState.avatar_url}`} alt="Profile" className="dashboard-avatar" />
                 ) : (
                     <div className="dashboard-avatar-placeholder">
                         {(userState.full_name || userState.username || 'U').charAt(0).toUpperCase()}
