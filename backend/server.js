@@ -8,9 +8,18 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import pg from 'pg';
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 const { Pool } = pg;
 
 dotenv.config();
+
+// Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -51,18 +60,14 @@ app.get('/api/status', (req, res) => {
 // Authentication endpoints
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secure-secret-token-key-for-benit';
 
-// Setup multer for avatar uploads
-const avatarsDir = path.join(process.cwd(), 'uploads', 'avatars');
-if (!fs.existsSync(avatarsDir)) {
-    fs.mkdirSync(avatarsDir, { recursive: true });
-}
-const avatarStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, avatarsDir);
+// Setup cloudinary storage for avatar uploads
+const avatarStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'avatars',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'gif'],
+        transformation: [{ width: 150, height: 150, crop: 'limit' }]
     },
-    filename: function(req, file, cb) {
-        cb(null, 'avatar-' + Date.now() + path.extname(file.originalname));
-    }
 });
 const uploadAvatar = multer({ storage: avatarStorage });
 
@@ -74,7 +79,7 @@ app.post('/api/signup', uploadAvatar.single('avatar'), async (req, res) => {
 
   let avatar_url = null;
   if (req.file) {
-      avatar_url = `/uploads/avatars/${req.file.filename}`;
+      avatar_url = req.file.path; // Cloudinary URL
   }
 
   try {
@@ -195,18 +200,13 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Setup multer for exam uploads
-const uploadsDir = path.join(process.cwd(), 'uploads', 'exams');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, uploadsDir);
+// Setup cloudinary storage for exam uploads
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'exams',
+        allowed_formats: ['pdf'],
     },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-    }
 });
 const upload = multer({ storage: storage });
 
@@ -223,7 +223,7 @@ app.post('/api/exams/upload', upload.single('examFile'), async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields or file.' });
         }
 
-        const file_url = `/uploads/exams/${file.filename}`;
+        const file_url = file.path; // Cloudinary URL
         
         const insertQuery = `
             INSERT INTO teacher_exams (teacher_id, teacher_name, year_level, subject_name, file_url, time_limit, attempts_allowed)
@@ -272,15 +272,9 @@ app.put('/api/exams/:id', upload.single('examFile'), async (req, res) => {
 
         let file_url = check.rows[0].file_url;
         if (req.file) {
-            file_url = `/uploads/exams/${req.file.filename}`;
-            try {
-                const oldPath = path.join(process.cwd(), check.rows[0].file_url);
-                if (fs.existsSync(oldPath)) {
-                    fs.unlinkSync(oldPath);
-                }
-            } catch (err) {
-                console.error("Failed to delete old file:", err);
-            }
+            file_url = req.file.path; // Cloudinary URL
+            // Note: In Cloudinary, deleting the old file requires more logic (destroy)
+            // For now, we just update the record
         }
 
         const updateQuery = `
@@ -309,14 +303,8 @@ app.delete('/api/exams/:id', async (req, res) => {
         if (check.rows.length === 0) return res.status(404).json({ error: 'Exam not found' });
         if (check.rows[0].teacher_id != teacher_id) return res.status(403).json({ error: 'Unauthorized to delete this exam' });
         
-        try {
-            const oldPath = path.join(process.cwd(), check.rows[0].file_url);
-            if (fs.existsSync(oldPath)) {
-                fs.unlinkSync(oldPath);
-            }
-        } catch (err) {
-             console.error("Failed to delete file:", err);
-        }
+        // Note: For deletion from Cloudinary, we'd need the public_id
+        // For now, we just remove the database record
         
         await pool.query('DELETE FROM teacher_exams WHERE id = $1', [id]);
         res.json({ status: 'success' });
