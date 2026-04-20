@@ -24,6 +24,9 @@ cloudinary.config({
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Trust front-end proxy (Render, Vercel, etc.)
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
@@ -39,7 +42,10 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeoutMillis: 10000, // 10s timeout
+  idleTimeoutMillis: 30000, // 30s idle
+  max: 20 // max clients
 });
 
 pool.connect((err, client, release) => {
