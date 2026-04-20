@@ -42,22 +42,25 @@ if (!process.env.DATABASE_URL) {
   console.error('CRITICAL ERROR: DATABASE_URL is not defined! Please check your Render Environment Variables.');
 }
 
-// Clean the connection string to prevent conflicts with the SSL object
+// Clean the connection string
 const dbUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.split('?')[0] : '';
+const dbHost = dbUrl ? dbUrl.split('@')[1]?.split('/')[0] : 'unknown';
+
+console.log(`Attempting to connect to database host: ${dbHost}`);
 
 const pool = new Pool({
-  connectionString: dbUrl || process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   },
   connectionTimeoutMillis: 10000,
   idleTimeoutMillis: 30000,
-  max: 20
+  max: 10
 });
 
 pool.connect((err, client, release) => {
   if (err) {
-    return console.error('Error acquiring client', err.stack);
+    return console.error('CRITICAL: Error acquiring database client:', err.message);
   }
   client.query('SELECT NOW()', (err, result) => {
     release();
