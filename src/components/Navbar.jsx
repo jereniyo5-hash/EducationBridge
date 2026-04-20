@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ setIsChatOpen }) => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
     const [user, setUser] = useState(null);
     const [isNavShowing, setIsNavShowing] = useState(false);
+    const location = useLocation();
+    const isExamPage = location.pathname.includes('/take-exam') || location.pathname.includes('/assessment') || location.pathname.includes('/create-exam');
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -38,7 +40,21 @@ const Navbar = () => {
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
+                    {!isExamPage && (
+                        <li>
+                            <Link to="#" className="jeremie-nav-link" style={{ color: '#007bff', fontWeight: 'bold' }} onClick={(e) => {
+                                e.preventDefault();
+                                setIsNavShowing(false);
+                                if (!localStorage.getItem('token')) {
+                                    window.location.href = '/login';
+                                } else {
+                                    setIsChatOpen(true);
+                                }
+                            }}>Jeremie Ai</Link>
+                        </li>
+                    )}
                     {user?.role?.toLowerCase() === 'teacher' && <li><Link to="/create-exam" onClick={() => setIsNavShowing(false)}>Create Exam</Link></li>}
+                    {user?.role?.toLowerCase() === 'student' && <li><Link to="/dashboard" onClick={() => setIsNavShowing(false)}>Dashboard</Link></li>}
                     {!user && <li><Link to="/login" className="nav-btn-link" onClick={() => setIsNavShowing(false)}>Login</Link></li>}
                     {!user && <li><Link to="/signup" className="nav-btn-link logout-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>}
                     {user && (

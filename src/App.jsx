@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -14,13 +15,17 @@ import Assessment from './pages/Assessment';
 import CreateExam from './pages/CreateExam';
 import TakeTeacherExam from './pages/TakeTeacherExam';
 import ViewSubmissions from './pages/ViewSubmissions';
+import Dashboard from './pages/Dashboard';
+import DeepSeekChat from './components/DeepSeekChat';
 
 function App() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar setIsChatOpen={setIsChatOpen} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home setIsChatOpen={setIsChatOpen} />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
         <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} /> 
@@ -29,10 +34,12 @@ function App() {
         <Route path="/create-exam" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
         <Route path="/take-exam" element={<ProtectedRoute><TakeTeacherExam /></ProtectedRoute>} />
         <Route path="/submissions" element={<ProtectedRoute><ViewSubmissions /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
+      <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
       <Footer />
     </BrowserRouter>
   );

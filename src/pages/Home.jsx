@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import DeepSeekChat from '../components/DeepSeekChat';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './Home.css';
 
-const Home = () => {
-    const [isChatOpen, setIsChatOpen] = useState(false);
+const Home = ({ setIsChatOpen }) => {
     const [testimonials, setTestimonials] = useState([]);
     const [newTestimonial, setNewTestimonial] = useState({ name: '', role: '', comment: '' });
     const [submitStatus, setSubmitStatus] = useState(null);
@@ -25,10 +23,10 @@ const Home = () => {
 
         // Add event listener to adjust cleanly if screen flips or resizes
         window.addEventListener('resize', handleResize);
-        
+
         // Fetch testimonials
         fetchTestimonials();
-        
+
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
@@ -42,7 +40,7 @@ const Home = () => {
         } catch (error) {
             console.error("Failed to fetch testimonials", error);
         }
-    };
+    }
 
     const handleTestimonialSubmit = async (e) => {
         e.preventDefault();
@@ -92,7 +90,7 @@ const Home = () => {
 
                 <div className="hero-slide-overlay">
                     <div className="container hero-content">
-                        <h1 className="gradient-text text-white">Master Your National Exams</h1>
+                        <h1 className="gradient-text text-white">Welcome to the Educational_Bridge platform</h1>
                         <p>Jeremie Niyogisubizo.</p>
                         <div className="hero-buttons">
                             <Link to="/signup" className="btn btn-primary">Get Started</Link>
@@ -258,28 +256,28 @@ const Home = () => {
                     <div className="leave-comment-section" style={{ marginTop: '4rem', background: 'var(--card-bg)', padding: '2rem', borderRadius: '15px', border: '1px solid var(--card-border)' }}>
                         <h3 className="text-center" style={{ marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Leave a comment and your testimony</h3>
                         <p className="text-center" style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>Share your ideas. They will be directly added to our User Testimonies above.</p>
-                        
+
                         <form onSubmit={handleTestimonialSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px', margin: '0 auto' }}>
-                            <input 
-                                type="text" 
-                                placeholder="your name" 
+                            <input
+                                type="text"
+                                placeholder="your name"
                                 value={newTestimonial.name}
-                                onChange={(e) => setNewTestimonial({...newTestimonial, name: e.target.value})}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
                                 style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)' }}
                                 required
                             />
-                            <input 
-                                type="text" 
-                                placeholder="role" 
+                            <input
+                                type="text"
+                                placeholder="role"
                                 value={newTestimonial.role}
-                                onChange={(e) => setNewTestimonial({...newTestimonial, role: e.target.value})}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, role: e.target.value })}
                                 style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)' }}
                                 required
                             />
-                            <textarea 
-                                placeholder="comment or idea and how your feel" 
+                            <textarea
+                                placeholder="comment or idea and how your feel"
                                 value={newTestimonial.comment}
-                                onChange={(e) => setNewTestimonial({...newTestimonial, comment: e.target.value})}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, comment: e.target.value })}
                                 style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)', minHeight: '120px' }}
                                 required
                             />
@@ -292,9 +290,6 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-
-            {/* AI Chat Modal */}
-            <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
         </div>
     );
 };
