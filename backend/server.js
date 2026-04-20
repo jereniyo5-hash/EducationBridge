@@ -37,6 +37,9 @@ app.use('/api/', limiter);
 // It's best practice to use environment variables for secrets.
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 pool.connect((err, client, release) => {
