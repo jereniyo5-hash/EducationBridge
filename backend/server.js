@@ -38,14 +38,21 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // It's best practice to use environment variables for secrets.
+if (!process.env.DATABASE_URL) {
+  console.error('CRITICAL ERROR: DATABASE_URL is not defined! Please check your Render Environment Variables.');
+}
+
+// Clean the connection string to prevent conflicts with the SSL object
+const dbUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.split('?')[0] : '';
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl || process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   },
-  connectionTimeoutMillis: 10000, // 10s timeout
-  idleTimeoutMillis: 30000, // 30s idle
-  max: 20 // max clients
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: 20
 });
 
 pool.connect((err, client, release) => {
