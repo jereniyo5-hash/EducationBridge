@@ -56,6 +56,10 @@ pool.connect((err, client, release) => {
 });
 
 // Basic test endpoint
+app.get('/', (req, res) => {
+  res.send('Backend API is running 🚀');
+});
+
 app.get('/api/status', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running and connected to DB.' });
 });
