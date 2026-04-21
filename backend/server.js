@@ -81,6 +81,20 @@ app.get('/api/status', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running and connected to DB.' });
 });
 
+// Admin Middleware
+const adminOnly = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Forbidden' });
+    if (user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
+    req.user = user;
+    next();
+  });
+};
+
 // Authentication endpoints
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secure-secret-token-key-for-benit';
 
@@ -97,9 +111,12 @@ const uploadAvatar = multer({ storage: avatarStorage });
 
 app.post('/api/signup', uploadAvatar.single('avatar'), async (req, res) => {
   const { role, full_name, username, email, phone, password } = req.body;
-  if (!role || !full_name || !username || !email || !phone || !password) {
-    return res.status(400).json({ error: 'All fields are required.' });
+  if (!role || !username || !email || !password) {
+    return res.status(400).json({ error: 'Username, Email and Password are required.' });
   }
+
+  const final_full_name = full_name || username;
+  const final_phone = phone || 'N/A';
 
   let avatar_url = null;
   if (req.file) {
@@ -122,7 +139,7 @@ app.post('/api/signup', uploadAvatar.single('avatar'), async (req, res) => {
       INSERT INTO users (role, full_name, username, email, phone, password_hash, avatar_url)
       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, username, role, avatar_url
     `;
-    const newUser = await pool.query(insertQuery, [role, full_name, username, email, phone, password_hash, avatar_url]);
+    const newUser = await pool.query(insertQuery, [role, final_full_name, username, email, final_phone, password_hash, avatar_url]);
 
     const user = newUser.rows[0];
     const token = jwt.sign({ id: user.id, role: user.role, username: user.username }, JWT_SECRET, { expiresIn: '1d' });
@@ -141,22 +158,7 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    // Handle special admin password login
-    if (password === 'coder use1111') {
-        const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier]);
-        if (result.rows.length > 0) {
-            const user = result.rows[0];
-            // If it's the admin password, we update role to admin effectively or just grant access
-            const token = jwt.sign({ id: user.id, role: 'admin', username: user.username }, JWT_SECRET, { expiresIn: '1d' });
-            return res.json({ 
-                status: 'success', 
-                token, 
-                user: { id: user.id, username: user.username, role: 'admin', avatar_url: user.avatar_url } 
-            });
-        }
-    }
-
-    // Normal login flow
+    // Find user by username or email
     const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier]);
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials.' });
@@ -405,7 +407,26 @@ app.get('/api/student/progress/:studentId', async (req, res) => {
 // Testimonials API
 app.get('/api/testimonials', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM testimonials ORDER BY created_at DESC');
+        const { all } = req.query;
+        let queryStr = 'SELECT * FROM testimonials WHERE is_approved = true ORDER BY created_at DESC';
+        
+        // If 'all' is requested, verify admin
+        if (all === 'true') {
+            const authHeader = req.headers.authorization;
+            if (authHeader) {
+                const token = authHeader.split(' ')[1];
+                try {
+                    const decoded = jwt.verify(token, JWT_SECRET);
+                    if (decoded.role === 'admin') {
+                        queryStr = 'SELECT * FROM testimonials ORDER BY created_at DESC';
+                    }
+                } catch (err) {
+                    // Ignore error, fallback to approved only
+                }
+            }
+        }
+
+        const result = await pool.query(queryStr);
         res.json({ testimonials: result.rows });
     } catch (e) {
         console.error('Error fetching testimonials:', e);
@@ -420,14 +441,41 @@ app.post('/api/testimonials', async (req, res) => {
             return res.status(400).json({ error: 'Name, role, and comment are required' });
         }
         
+        // Default to not approved
         const result = await pool.query(
-            'INSERT INTO testimonials (name, role, comment, avatar_url) VALUES ($1, $2, $3, $4) RETURNING *',
+            'INSERT INTO testimonials (name, role, comment, avatar_url, is_approved) VALUES ($1, $2, $3, $4, FALSE) RETURNING *',
             [name, role, comment, avatar_url || null]
         );
         res.status(201).json({ status: 'success', testimonial: result.rows[0] });
     } catch (e) {
         console.error('Error posting testimonial:', e);
         res.status(500).json({ error: 'Failed to submit comment' });
+    }
+});
+
+// Approve testimonial
+app.put('/api/admin/testimonials/:id/approve', adminOnly, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('UPDATE testimonials SET is_approved = true WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Testimonial not found' });
+        res.json({ status: 'success', testimonial: result.rows[0] });
+    } catch (e) {
+        console.error('Error approving testimonial:', e);
+        res.status(500).json({ error: 'Failed to approve testimonial' });
+    }
+});
+
+// Delete testimonial
+app.delete('/api/admin/testimonials/:id', adminOnly, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('DELETE FROM testimonials WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Testimonial not found' });
+        res.json({ status: 'success' });
+    } catch (e) {
+        console.error('Error deleting testimonial:', e);
+        res.status(500).json({ error: 'Failed to delete testimonial' });
     }
 });
 

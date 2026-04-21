@@ -40,18 +40,21 @@ const Navbar = ({ setIsChatOpen }) => {
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
-                    <li><Link to="/testimonies" onClick={() => setIsNavShowing(false)}>Testimonials</Link></li>
                     {!isExamPage && (
                         <li>
                             <Link to="#" className="jeremie-nav-link" style={{ color: '#007bff', fontWeight: 'bold' }} onClick={(e) => {
                                 e.preventDefault();
                                 setIsNavShowing(false);
-                                setIsChatOpen(true);
+                                if (!localStorage.getItem('token')) {
+                                    window.location.href = '/login';
+                                } else {
+                                    setIsChatOpen(true);
+                                }
                             }}>Jeremie Ai</Link>
                         </li>
                     )}
-                    {user?.role?.toLowerCase() === 'admin' && <li><Link to="/admin" onClick={() => setIsNavShowing(false)}>Admin</Link></li>}
-                    {user?.role?.toLowerCase() === 'teacher' && <li><Link to="/teacher" onClick={() => setIsNavShowing(false)}>Dashboard</Link></li>}
+                     {user?.role?.toLowerCase() === 'admin' && <li><Link to="/admin-dashboard" onClick={() => setIsNavShowing(false)}>Admin Dash</Link></li>}
+                    {user?.role?.toLowerCase() === 'teacher' && <li><Link to="/teacher-dashboard" onClick={() => setIsNavShowing(false)}>Teacher Dash</Link></li>}
                     {user?.role?.toLowerCase() === 'student' && <li><Link to="/dashboard" onClick={() => setIsNavShowing(false)}>Dashboard</Link></li>}
                     {!user && <li><Link to="/login" className="nav-btn-link" onClick={() => setIsNavShowing(false)}>Login</Link></li>}
                     {!user && <li><Link to="/signup" className="nav-btn-link logout-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>}

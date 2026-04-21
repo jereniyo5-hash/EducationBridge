@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS testimonials (
     role VARCHAR(50) NOT NULL,
     comment TEXT NOT NULL,
     avatar_url TEXT,
+    is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

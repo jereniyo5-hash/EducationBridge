@@ -36,32 +36,49 @@ const Login = () => {
             const data = await response.json();
             
             if (response.ok) {
-                // Save token and push to home
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                navigate('/');
-                window.location.reload(); // Quick way to update navbar state if needed
+                if (data.status === 'success') {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (data.user.role === 'admin') {
+                        navigate('/admin-dashboard');
+                    } else if (data.user.role === 'teacher') {
+                        navigate('/teacher-dashboard');
+                    } else {
+                        navigate('/dashboard');
+                    }
+                    window.location.reload(); 
+                } else {
+                    setError(data.error || 'Invalid credentials.');
+                }
             } else {
                 setError(data.error || 'Invalid credentials.');
             }
         } catch (error) {
             console.error(error);
-            setError('Error connecting to the server. Is the backend running?');
+            setError('Error connecting to the server. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
+    const handleGoogleLogin = () => {
+        alert("Google Authentication integration would go here. (Requires Client ID configuration)");
+    };
+
     return (
         <div className="auth-container">
-            <div className="auth-card">
-                <h2>Welcome Back</h2>
-                <p>Login to your Educational_Bridge account</p>
+            <div className="auth-card glass-morphism">
+                <div className="auth-header">
+                    <h2>Welcome <span className="gradient-text">Back</span></h2>
+                    <p>Continue your learning journey.</p>
+                </div>
                 
-                {error && <div className="auth-error" style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
+                {error && <div className="auth-error-badge">{error}</div>}
 
                 <form className="auth-form" onSubmit={handleLogin}>
-                    <div className="form-group">
+                    <div className="input-group">
+                        <i className="uil uil-user"></i>
                         <input 
                             type="text" 
                             name="identifier" 
@@ -71,7 +88,8 @@ const Login = () => {
                             required 
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="input-group">
+                        <i className="uil uil-lock"></i>
                         <input 
                             type="password" 
                             name="password" 
@@ -82,16 +100,17 @@ const Login = () => {
                         />
                     </div>
 
-                    <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
-                        {loading ? 'Logging In...' : 'Login'}
+                    <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
+                        {loading ? 'Processing...' : 'Login'}
                     </button>
 
-                    <div className="google-auth-separator">
+                    <div className="divider">
                         <span>OR</span>
                     </div>
 
-                    <button type="button" className="btn btn-secondary google-btn" onClick={() => alert('Google login coming soon!')}>
-                        <i className="uil uil-google"></i> Continue with Google
+                    <button type="button" className="google-btn" onClick={handleGoogleLogin}>
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+                        Continue with Google
                     </button>
                     
                     <div className="auth-footer">

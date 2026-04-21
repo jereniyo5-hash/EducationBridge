@@ -16,9 +16,8 @@ import CreateExam from './pages/CreateExam';
 import TakeTeacherExam from './pages/TakeTeacherExam';
 import ViewSubmissions from './pages/ViewSubmissions';
 import Dashboard from './pages/Dashboard';
-import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
-import Testimonials from './pages/Testimonials';
+import AdminDashboard from './pages/AdminDashboard';
 import DeepSeekChat from './components/DeepSeekChat';
 
 function App() {
@@ -33,22 +32,13 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} /> 
         <Route path="/subject" element={<Subject />} />
-        <Route path="/assessment" element={<Assessment />} />
-        
-        {/* Protected Features */}
-        <Route path="/testimonies" element={<ProtectedRoute><Testimonials /></ProtectedRoute>} />
-        
-        {/* Role-based Dashboards */}
-        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-        <Route path="/teacher" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        
-        {/* Teacher Actions */}
+        <Route path="/assessment" element={<ProtectedRoute><Assessment /></ProtectedRoute>} />
         <Route path="/create-exam" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
+        <Route path="/take-exam" element={<ProtectedRoute><TakeTeacherExam /></ProtectedRoute>} />
         <Route path="/submissions" element={<ProtectedRoute><ViewSubmissions /></ProtectedRoute>} />
-        
-        {/* Student/Public Actions */}
-        <Route path="/take-exam" element={<TakeTeacherExam />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/teacher-dashboard" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
+        <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
