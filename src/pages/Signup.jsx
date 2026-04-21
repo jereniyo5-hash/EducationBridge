@@ -123,6 +123,14 @@ const Signup = () => {
                     <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
                         {loading ? 'Creating Account...' : 'Sign Up'}
                     </button>
+
+                    <div className="google-auth-separator">
+                        <span>OR</span>
+                    </div>
+
+                    <button type="button" className="btn btn-secondary google-btn" onClick={() => alert('Google signup coming soon!')}>
+                        <i className="uil uil-google"></i> Continue with Google
+                    </button>
                     
                     <div className="auth-footer">
                         Already have an account? <Link to="/login">Login here</Link>

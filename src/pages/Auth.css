@@ -99,3 +99,45 @@
 .auth-footer a:hover {
     color: #ffe259;
 }
+
+.google-auth-separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: var(--text-secondary);
+}
+
+.google-auth-separator::before,
+.google-auth-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.google-auth-separator span {
+    padding: 0 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff !important;
+    color: #444 !important;
+    border: 1px solid #ddd;
+    font-weight: 500;
+}
+
+.google-btn i {
+    font-size: 1.2rem;
+    color: #ea4335;
+}
+
+.google-btn:hover {
+    background: #f1f1f1 !important;
+}

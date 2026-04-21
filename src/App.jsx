@@ -16,6 +16,9 @@ import CreateExam from './pages/CreateExam';
 import TakeTeacherExam from './pages/TakeTeacherExam';
 import ViewSubmissions from './pages/ViewSubmissions';
 import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
+import Testimonials from './pages/Testimonials';
 import DeepSeekChat from './components/DeepSeekChat';
 
 function App() {
@@ -27,14 +30,25 @@ function App() {
       <Routes>
         <Route path="/" element={<Home setIsChatOpen={setIsChatOpen} />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
-        <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} /> 
-        <Route path="/subject" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
-        <Route path="/assessment" element={<ProtectedRoute><Assessment /></ProtectedRoute>} />
-        <Route path="/create-exam" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
-        <Route path="/take-exam" element={<ProtectedRoute><TakeTeacherExam /></ProtectedRoute>} />
-        <Route path="/submissions" element={<ProtectedRoute><ViewSubmissions /></ProtectedRoute>} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} /> 
+        <Route path="/subject" element={<Subject />} />
+        <Route path="/assessment" element={<Assessment />} />
+        
+        {/* Protected Features */}
+        <Route path="/testimonies" element={<ProtectedRoute><Testimonials /></ProtectedRoute>} />
+        
+        {/* Role-based Dashboards */}
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/teacher" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        
+        {/* Teacher Actions */}
+        <Route path="/create-exam" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
+        <Route path="/submissions" element={<ProtectedRoute><ViewSubmissions /></ProtectedRoute>} />
+        
+        {/* Student/Public Actions */}
+        <Route path="/take-exam" element={<TakeTeacherExam />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

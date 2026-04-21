@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import './Home.css';
+import './Home.css'; // Reusing Home.css for testimonial styles
 
-const Home = ({ setIsChatOpen }) => {
+const Testimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [newTestimonial, setNewTestimonial] = useState({ name: '', role: '', comment: '' });
     const [submitStatus, setSubmitStatus] = useState(null);
 
-    // JavaScript to ensure the page fits and is physically stable without bouncing or overflow on mobile
     useEffect(() => {
-        const handleResize = () => {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        };
-
-        // Execute immediately to set stable height
-        handleResize();
-
-        // Add event listener to adjust cleanly if screen flips or resizes
-        window.addEventListener('resize', handleResize);
-
-        // Fetch testimonials
         fetchTestimonials();
-
-        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     async function fetchTestimonials() {
@@ -74,54 +58,24 @@ const Home = ({ setIsChatOpen }) => {
     };
 
     return (
-        <div className="home-page-container">
-            {/* Animated Video Hero Section */}
-            <section className="hero-video-section">
-                {/* YouTube iframe for the animated background */}
-                <iframe
-                    className="hero-video-bg"
-                    src="https://www.youtube.com/embed/kr-eIQ_SzYk?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&playsinline=1&playlist=kr-eIQ_SzYk&modestbranding=1"
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    style={{ pointerEvents: 'none' }}
-                ></iframe>
-
-                <div className="hero-slide-overlay">
-                    <div className="container hero-content">
-                        <h1 className="gradient-text text-white">Welcome to the Educational_Bridge platform</h1>
-                        <p>Jeremie Niyogisubizo.</p>
-                        <div className="hero-buttons">
-                            <Link to="/signup" className="btn btn-primary">Get Started</Link>
-                            <Link to="/about" className="btn btn-secondary">Learn More</Link>
-                            <Link to="/how-it-works" className="btn btn-primary">How It Works</Link>
-                            <button className="btn btn-primary jeremie-btn" onClick={() => setIsChatOpen(true)}>
-                                <i className="uil uil-robot"></i> Jeremie Ai
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ... remaining sections ... */}
-
-            {/* Testimonies */}
+        <div className="home-page-container" style={{ paddingTop: '100px' }}>
             <section className="testimonies-section">
                 <div className="container">
-                    <h2 className="gradient-text text-center mb-loose">User Testimonies</h2>
+                    <h2 className="gradient-text text-center mb-loose">Community Testimonials</h2>
+                    <p className="text-center subtitle" style={{ marginBottom: '3rem' }}>
+                        Join the hundreds of students and teachers benefiting from Educational_Bridge.
+                    </p>
+                    
                     <Swiper
                         modules={[Pagination]}
                         spaceBetween={30}
                         slidesPerView={1}
                         pagination={{ clickable: true }}
                         breakpoints={{
-                            768: {
-                                slidesPerView: 2,
-                            },
+                            768: { slidesPerView: 2 },
                         }}
                     >
-                        {testimonials.slice(0, 4).map((t, idx) => (
+                        {testimonials.map((t, idx) => (
                             <SwiperSlide key={t.id || idx}>
                                 <article className="testimonial-card interactive-card">
                                     <div className="avatar">
@@ -145,8 +99,38 @@ const Home = ({ setIsChatOpen }) => {
                         ))}
                     </Swiper>
 
-                    <div className="text-center" style={{ marginTop: '3rem' }}>
-                        <Link to="/testimonies" className="btn btn-primary">View All & Leave a Testimony</Link>
+                    <div className="leave-comment-section" style={{ marginTop: '4rem', background: 'var(--card-bg)', padding: '2rem', borderRadius: '15px', border: '1px solid var(--card-border)' }}>
+                        <h3 className="text-center" style={{ marginBottom: '1.5rem' }}>Share Your Experience</h3>
+                        <form onSubmit={handleTestimonialSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px', margin: '0 auto' }}>
+                            <input
+                                type="text"
+                                placeholder="Your Name"
+                                value={newTestimonial.name}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
+                                style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)' }}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="Your Role (e.g., S3 Student, Teacher)"
+                                value={newTestimonial.role}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, role: e.target.value })}
+                                style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)' }}
+                                required
+                            />
+                            <textarea
+                                placeholder="Tell us how Educational_Bridge has helped you..."
+                                value={newTestimonial.comment}
+                                onChange={(e) => setNewTestimonial({ ...newTestimonial, comment: e.target.value })}
+                                style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'var(--bg-color)', color: 'var(--text-primary)', minHeight: '120px' }}
+                                required
+                            />
+                            <button type="submit" className="btn btn-primary w-100" disabled={submitStatus === 'submitting'}>
+                                {submitStatus === 'submitting' ? 'Submitting...' : 'Post Testimony'}
+                            </button>
+                            {submitStatus === 'success' && <p style={{ color: '#00bf8e', textAlign: 'center' }}>Thank you for your feedback!</p>}
+                            {submitStatus === 'error' && <p style={{ color: '#ff4c60', textAlign: 'center' }}>Something went wrong. Please try again.</p>}
+                        </form>
                     </div>
                 </div>
             </section>
@@ -154,4 +138,4 @@ const Home = ({ setIsChatOpen }) => {
     );
 };
 
-export default Home;
+export default Testimonials;
