@@ -15,6 +15,7 @@ import Assessment from './pages/Assessment';
 import CreateExam from './pages/CreateExam';
 import TakeTeacherExam from './pages/TakeTeacherExam';
 import ViewSubmissions from './pages/ViewSubmissions';
+import { Toaster } from 'react-hot-toast';
 import Dashboard from './pages/Dashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster position="top-center" reverseOrder={false} />
       <Navbar setIsChatOpen={setIsChatOpen} />
       <Routes>
         <Route path="/" element={<Home setIsChatOpen={setIsChatOpen} />} />
