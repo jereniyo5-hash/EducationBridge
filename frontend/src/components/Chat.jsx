@@ -88,15 +88,20 @@ const Chat = ({ currentUser, isTeacher }) => {
     return (
         <div className="chat-container interactive-card">
             <div className="chat-sidebar">
-                <h3>{isTeacher ? 'Student Chats' : 'Teachers'}</h3>
+                <h3>
+                    {isTeacher ? 'Student Chats' : 'Teachers'}
+                    <i className="uil uil-edit" style={{cursor: 'pointer', color: '#4f46e5'}}></i>
+                </h3>
                 {!isTeacher && (
-                    <input 
-                        type="text" 
-                        placeholder="Search teacher username..." 
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="chat-search"
-                    />
+                    <div className="chat-search-container">
+                        <input 
+                            type="text" 
+                            placeholder="Search teachers..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="chat-search"
+                        />
+                    </div>
                 )}
                 <div className="contact-list">
                     {contacts.map(contact => (
@@ -111,6 +116,7 @@ const Chat = ({ currentUser, isTeacher }) => {
                                 ) : (
                                     (contact.full_name || contact.username).charAt(0).toUpperCase()
                                 )}
+                                <div style={{position: 'absolute', bottom: '0', right: '0', width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', border: '2px solid white'}}></div>
                             </div>
                             <div className="contact-info">
                                 <h4>{contact.full_name || contact.username}</h4>
@@ -126,7 +132,17 @@ const Chat = ({ currentUser, isTeacher }) => {
                 {selectedUser ? (
                     <>
                         <div className="chat-header">
-                            <h4>Chatting with {selectedUser.full_name || selectedUser.username}</h4>
+                            <div className="contact-avatar" style={{width: '35px', height: '35px', fontSize: '1rem', marginRight: '0'}}>
+                                {selectedUser.avatar_url ? (
+                                    <img src={selectedUser.avatar_url.startsWith('http') ? selectedUser.avatar_url : `${API_URL}${selectedUser.avatar_url}`} alt={selectedUser.username} />
+                                ) : (
+                                    (selectedUser.full_name || selectedUser.username).charAt(0).toUpperCase()
+                                )}
+                            </div>
+                            <div>
+                                <h4>{selectedUser.full_name || selectedUser.username}</h4>
+                                <div className="chat-header-status">Online</div>
+                            </div>
                         </div>
                         <div className="chat-messages">
                             {messages.map(msg => {
@@ -150,27 +166,39 @@ const Chat = ({ currentUser, isTeacher }) => {
                             <div ref={messagesEndRef} />
                         </div>
                         <form className="chat-input-area" onSubmit={handleSendMessage}>
+                            {file && (
+                                <div className="file-preview-badge">
+                                    <i className="uil uil-paperclip"></i>
+                                    {file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name}
+                                    <i className="uil uil-times-circle" onClick={() => setFile(null)} style={{marginLeft: '5px'}}></i>
+                                </div>
+                            )}
                             <label className="file-upload-btn">
-                                <i className="uil uil-paperclip"></i>
+                                <i className="uil uil-image-plus"></i>
                                 <input type="file" onChange={e => setFile(e.target.files[0])} style={{ display: 'none' }} />
                             </label>
-                            {file && <span className="file-name" title={file.name}>{file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name}</span>}
                             
-                            <input 
-                                type="text" 
-                                placeholder="Type a message... (HTML allowed)" 
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                            />
-                            <button type="submit" disabled={loading || (!newMessage.trim() && !file)}>
+                            <div className="input-wrapper">
+                                <input 
+                                    type="text" 
+                                    placeholder="Message..." 
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                />
+                            </div>
+
+                            <button type="submit" className="chat-send-btn" disabled={loading || (!newMessage.trim() && !file)}>
                                 {loading ? <i className="uil uil-spinner"></i> : <i className="uil uil-message"></i>}
                             </button>
                         </form>
                     </>
                 ) : (
                     <div className="chat-placeholder">
-                        <i className="uil uil-comments"></i>
-                        <p>Select a contact to start chatting</p>
+                        <div className="icon-wrapper">
+                            <i className="uil uil-envelope-alt"></i>
+                        </div>
+                        <h3>Your Messages</h3>
+                        <p>Select a contact to start chatting securely.</p>
                     </div>
                 )}
             </div>
