@@ -100,8 +100,8 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-    color: #4f46e5;
+    background: #e7f0ff;
+    color: #0866FF;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -229,7 +229,7 @@
 }
 
 .mine .message-content {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: #0866FF;
     color: #ffffff;
     border-bottom-right-radius: 4px;
 }
@@ -263,7 +263,7 @@
 }
 .theirs .message-file {
     background: #ffffff;
-    color: #4f46e5;
+    color: #0866FF;
     border-color: #e5e7eb;
 }
 
@@ -336,8 +336,8 @@
 }
 
 .file-upload-btn:hover {
-    color: #4f46e5;
-    background: rgba(79, 70, 229, 0.1);
+    color: #0866FF;
+    background: #e7f0ff;
 }
 
 .file-preview-badge {
@@ -374,7 +374,7 @@
     height: 42px;
     border-radius: 50%;
     background: transparent;
-    color: #4f46e5;
+    color: #0866FF;
     border: none;
     cursor: pointer;
     display: flex;
@@ -385,7 +385,7 @@
 }
 
 .chat-send-btn:hover:not(:disabled) {
-    background: rgba(79, 70, 229, 0.1);
+    background: #e7f0ff;
     transform: scale(1.05);
 }
 
