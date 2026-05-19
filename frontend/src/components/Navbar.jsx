@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import './Navbar.css';
 
 const Navbar = ({ setIsChatOpen }) => {
-    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const [user, setUser] = useState(null);
     const [isNavShowing, setIsNavShowing] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);

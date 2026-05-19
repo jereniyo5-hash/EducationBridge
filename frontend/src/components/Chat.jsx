@@ -86,7 +86,7 @@ const Chat = ({ currentUser, isTeacher }) => {
     };
 
     return (
-        <div className="chat-container interactive-card">
+        <div className={`chat-container interactive-card ${selectedUser ? 'is-chatting' : ''}`}>
             <div className="chat-sidebar">
                 <h3>
                     {isTeacher ? 'Student Chats' : 'Teachers'}
@@ -132,6 +132,9 @@ const Chat = ({ currentUser, isTeacher }) => {
                 {selectedUser ? (
                     <>
                         <div className="chat-header">
+                            <button className="mobile-back-btn" onClick={() => setSelectedUser(null)}>
+                                <i className="uil uil-arrow-left"></i>
+                            </button>
                             <div className="contact-avatar" style={{width: '35px', height: '35px', fontSize: '1rem', marginRight: '0'}}>
                                 {selectedUser.avatar_url ? (
                                     <img src={selectedUser.avatar_url.startsWith('http') ? selectedUser.avatar_url : `${API_URL}${selectedUser.avatar_url}`} alt={selectedUser.username} />
