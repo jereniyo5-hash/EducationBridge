@@ -106,7 +106,7 @@ const About = () => {
             {/* Features Section */}
             <section id="features" style={{ marginBottom: '5rem' }}>
                 <h3 className="text-center" style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--text-primary)' }}>What We Offer</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+                <div className="features-grid">
                     <div className="interactive-card" style={{ padding: '2rem', background: 'var(--card-bg)', borderRadius: '15px', border: '1px solid var(--card-border)', textAlign: 'center' }}>
                         <i className="uil uil-laptop-connection" style={{ fontSize: '3rem', color: '#6c63ff', marginBottom: '1rem', display: 'block' }}></i>
                         <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Interactive Lessons</h4>
@@ -153,19 +153,18 @@ const About = () => {
             </section>
 
             {/* Biography Section */}
-            <section id="biography" className="interactive-card" style={{ 
+            <section id="biography" className="interactive-card biography-section" style={{ 
                 background: 'var(--card-bg)', 
                 borderRadius: '20px', 
                 border: '1px solid var(--card-border)', 
                 marginTop: '3rem', 
-                padding: '4rem 3rem',
                 boxShadow: '0 20px 40px rgba(0,0,0,0.05)',
                 position: 'relative',
                 overflow: 'hidden'
             }}>
                 <AnimatedBackground />
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                    <h3 className="gradient-text mb-loose text-center" style={{ fontSize: '2.5rem', marginBottom: '3rem' }}>Meet the Founder</h3>
+                    <h3 className="gradient-text mb-loose text-center biography-title">Meet the Founder</h3>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '900px', margin: '0 auto' }}>
                     <div style={{ marginBottom: '3rem', position: 'relative' }}>
@@ -180,8 +179,9 @@ const About = () => {
                         <img 
                             src="/images/jeremie.jpg" 
                             alt="Niyogisubizo Jeremie" 
+                            className="biography-image"
                             style={{ 
-                                width: '220px', height: '220px', objectFit: 'cover', 
+                                objectFit: 'cover', 
                                 borderRadius: '50%', border: '5px solid #ffffff', 
                                 position: 'relative', zIndex: 1,
                                 boxShadow: '0 10px 25px rgba(0,0,0,0.15)' 
@@ -189,7 +189,7 @@ const About = () => {
                         />
                     </div>
 
-                    <div style={{ width: '100%', background: '#ffffff', padding: '3rem', borderRadius: '15px', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0' }}>
+                    <div className="bio-content-card">
                         <SequentialTypewriter paragraphs={bioParagraphs} speed={15} />
                     </div>
                     </div>
