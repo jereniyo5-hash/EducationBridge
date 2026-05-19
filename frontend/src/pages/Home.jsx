@@ -1,10 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './Home.css';
+
+const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const [typedText, setTypedText] = useState('');
+    const cardRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.1 }
+        );
+        if (cardRef.current) observer.observe(cardRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isVisible) {
+            let i = 0;
+            const startTyping = setTimeout(() => {
+                const interval = setInterval(() => {
+                    if (i <= subjects.length) {
+                        setTypedText(subjects.slice(0, i));
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 30); // Fast typing speed
+                return () => clearInterval(interval);
+            }, delayIndex * 1200 + 600); // Strict sequential typing: 1.2s per card
+
+            return () => clearTimeout(startTyping);
+        }
+    }, [isVisible, delayIndex, subjects]);
+
+    return (
+        <article 
+            ref={cardRef}
+            onClick={() => navigate(`/subject?level=${encodeURIComponent(title + ' ' + num)}`)}
+            className="class-card interactive-card" 
+            style={{ 
+                background: '#ffffff', // Pure white background
+                border: `2px solid ${color}`, 
+                borderRadius: '15px', 
+                padding: '1.5rem',
+                color: '#000000',
+                cursor: 'pointer',
+                transition: `transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delayIndex * 0.15}s, opacity 0.6s ease ${delayIndex * 0.15}s, box-shadow 0.3s ease`,
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'perspective(600px) rotateY(0deg)' : 'perspective(600px) rotateY(90deg)'
+            }}
+        >
+            <div className="class-icon" style={{ background: color, width: '50px', height: '50px', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontWeight: 'bold' }}>
+                {prefix}{num}
+            </div>
+            <h5 style={{ color: '#000000', fontWeight: 'bold' }}>{title} {num}</h5>
+            <p style={{ fontSize: '0.85rem', color: '#4a4a4a', minHeight: '40px', marginTop: '10px', fontWeight: '500' }}>
+                {typedText}{isVisible && typedText.length < subjects.length ? '|' : ''}
+            </p>
+        </article>
+    );
+};
 
 const Home = ({ setIsChatOpen }) => {
     const [testimonials, setTestimonials] = useState([]);
@@ -96,15 +164,6 @@ const Home = ({ setIsChatOpen }) => {
                             <Link to="/signup" className="btn btn-primary">Get Started</Link>
                             <Link to="/about" className="btn btn-secondary">Learn More</Link>
                             <Link to="/how-it-works" className="btn btn-primary">How It Works</Link>
-                            <button className="btn btn-primary jeremie-btn" onClick={() => {
-                                if (!localStorage.getItem('token')) {
-                                    window.location.href = '/login';
-                                } else {
-                                    setIsChatOpen(true);
-                                }
-                            }}>
-                                <i className="uil uil-robot"></i> Jeremie Ai
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -125,26 +184,34 @@ const Home = ({ setIsChatOpen }) => {
                         <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
                             <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
                             <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                {[1, 2, 3, 4, 5, 6].map((num) => (
-                                    <article className="class-card interactive-card" key={`p${num}`} style={{ background: 'var(--card-bg)', border: '1px solid var(--color-primary)', borderRadius: '15px', padding: '1.5rem' }}>
-                                        <div className="class-icon" style={{ background: 'var(--color-primary)', width: '50px', height: '50px', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>P{num}</div>
-                                        <h5>Primary {num}</h5>
-                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Math, English, Kinyarwanda, SET, SST</p>
-                                    </article>
+                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                    <AnimatedCard 
+                                        key={`p${num}`} 
+                                        title="Primary" 
+                                        prefix="P" 
+                                        num={num} 
+                                        color="var(--accent-yellow, #fbc02d)" 
+                                        subjects="Math, English, Kinyarwanda, SET, SST" 
+                                        delayIndex={idx} 
+                                    />
                                 ))}
                             </div>
                         </div>
 
                         {/* Secondary School */}
                         <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                            <h2 style={{ color: 'var(--color-secondary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-secondary)', paddingBottom: '0.5rem' }}>Secondary School</h2>
+                            <h2 style={{ color: 'var(--accent-blue, #3b82f6)', marginBottom: '1.5rem', borderBottom: '2px solid var(--accent-blue, #3b82f6)', paddingBottom: '0.5rem' }}>Secondary School</h2>
                             <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                {[1, 2, 3, 4, 5, 6].map((num) => (
-                                    <article className="class-card interactive-card" key={`s${num}`} style={{ background: 'var(--card-bg)', border: '1px solid var(--color-secondary)', borderRadius: '15px', padding: '1.5rem' }}>
-                                        <div className="class-icon" style={{ background: 'var(--color-secondary)', width: '50px', height: '50px', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>S{num}</div>
-                                        <h5>Senior {num}</h5>
-                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Math, Sciences, Languages, Humanities</p>
-                                    </article>
+                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                    <AnimatedCard 
+                                        key={`s${num}`} 
+                                        title="Senior" 
+                                        prefix="S" 
+                                        num={num} 
+                                        color="var(--accent-blue, #3b82f6)" 
+                                        subjects="Math, Sciences, Languages, Humanities" 
+                                        delayIndex={idx + 6} 
+                                    />
                                 ))}
                             </div>
                         </div>

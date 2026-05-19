@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Chat from '../components/Chat';
 import './Dashboard.css';
 
 const TeacherDashboard = () => {
@@ -141,6 +142,14 @@ const TeacherDashboard = () => {
                         ))}
                     </div>
                 )}
+            </div>
+
+            <div className="dashboard-chat-section" style={{ marginTop: '3rem' }}>
+                <div className="section-header">
+                    <h2>Student Messages</h2>
+                    <p>Respond to student queries and provide guidance.</p>
+                </div>
+                <Chat currentUser={userState} isTeacher={true} />
             </div>
 
             <style jsx>{`

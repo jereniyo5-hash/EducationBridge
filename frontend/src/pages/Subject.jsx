@@ -66,9 +66,11 @@ const P1_ENGLISH_UNITS = [
 const Subject = () => {
     const [searchParams] = useSearchParams();
     const levelKeys = Object.keys(LEVELS);
-    const [activeLevel, setActiveLevel] = useState(levelKeys[0]);
+    const [activeLevel, setActiveLevel] = useState(searchParams.get("level") || levelKeys[0]);
     const [searchQuery, setSearchQuery] = useState(searchParams.get("query") || "");
     const [selectedUnitSubject, setSelectedUnitSubject] = useState(null);
+    const [selectedPdfInfo, setSelectedPdfInfo] = useState(null);
+    const [isFlipped, setIsFlipped] = useState(false);
     const [teacherExams, setTeacherExams] = useState([]);
     const [user, setUser] = useState(null);
 
@@ -218,15 +220,13 @@ const Subject = () => {
                                                 <p>End unit assessment for {level} — {subject}.</p>
                                                 {SUBJECT_PDFS[level]?.[subject] ? (
                                                     <>
-                                                        <a 
-                                                            href={SUBJECT_PDFS[level][subject]} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer"
+                                                        <button 
+                                                            onClick={() => setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject })}
                                                             className="btn btn-primary small-btn w-100 mb-2"
                                                             style={{ marginBottom: '10px' }}
                                                         >
                                                             {subject === "Kinyarwanda" ? "Soma igitabo" : "Open PDF"}
-                                                        </a>
+                                                        </button>
                                                         {((level === "Primary 1" && (subject === "Mathematics" || subject === "English" || subject === "Kinyarwanda")) || (level === "Senior 3" && subject === "Mathematics")) ? (
                                                             <button 
                                                                 className="btn btn-secondary small-btn w-100"
@@ -293,6 +293,88 @@ const Subject = () => {
                     </div>
                 )}
             </div>
+
+            {/* PDF Viewer Modal */}
+            {selectedPdfInfo && (
+                <div className="units-modal-overlay" onClick={() => { setSelectedPdfInfo(null); setIsFlipped(false); }} style={{ zIndex: 3000, padding: 0 }}>
+                    <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100vh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)', perspective: '1500px' }} onClick={e => e.stopPropagation()}>
+                        <div className="units-modal-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card-bg)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 10 }}>
+                            <button 
+                                onClick={() => {
+                                    if (isFlipped) {
+                                        setIsFlipped(false);
+                                    } else {
+                                        setSelectedPdfInfo(null);
+                                        setIsFlipped(false);
+                                    }
+                                }} 
+                                className="btn btn-secondary" 
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}
+                            >
+                                <i className="uil uil-arrow-left" style={{ fontSize: '1.2rem' }}></i> {isFlipped ? "Back to Book" : "Back to Subjects"}
+                            </button>
+                            <h3 className="gradient-text" style={{ margin: 0, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <i className="uil uil-book-open"></i> {selectedPdfInfo.level} - {selectedPdfInfo.subject}
+                            </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', minWidth: '150px', justifyContent: 'flex-end' }}>
+                                {!isFlipped && (
+                                    <button 
+                                        className="btn btn-primary"
+                                        style={{ padding: '0.5rem 1.5rem', borderRadius: '30px', boxShadow: '0 4px 15px rgba(108, 99, 255, 0.3)' }}
+                                        onClick={() => setIsFlipped(true)}
+                                    >
+                                        {selectedPdfInfo.subject === "Kinyarwanda" ? "Kora isuzuma" : "Take Assessment"} <i className="uil uil-arrow-right"></i>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <div style={{ flex: 1, width: '100%', position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
+                            {/* FRONT: PDF VIEW */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', background: '#f5f5f5' }}>
+                                <iframe 
+                                    src={selectedPdfInfo.url.includes('drive.google.com') ? selectedPdfInfo.url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview') : selectedPdfInfo.url} 
+                                    width="100%" 
+                                    height="100%" 
+                                    style={{ border: 'none' }} 
+                                    title="PDF Viewer"
+                                ></iframe>
+                            </div>
+                            
+                            {/* BACK: ASSESSMENT VIEW */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', background: 'var(--bg-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', overflowY: 'auto' }}>
+                                <h2 className="gradient-text" style={{ marginBottom: '2rem', fontSize: '2rem' }}>{selectedPdfInfo.level} {selectedPdfInfo.subject} Assessment</h2>
+                                
+                                {((selectedPdfInfo.level === "Primary 1" && (selectedPdfInfo.subject === "Mathematics" || selectedPdfInfo.subject === "English" || selectedPdfInfo.subject === "Kinyarwanda")) || (selectedPdfInfo.level === "Senior 3" && selectedPdfInfo.subject === "Mathematics")) ? (
+                                    <div className="units-list" style={{ width: '100%', maxWidth: '600px', background: 'var(--card-bg)', padding: '2rem', borderRadius: '15px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                                        <p style={{ textAlign: 'center', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>Select a unit to begin your assessment:</p>
+                                        {(selectedPdfInfo.level === "Senior 3" && selectedPdfInfo.subject === "Mathematics" ? S3_MATH_UNITS : (selectedPdfInfo.subject === "Mathematics" ? P1_MATH_UNITS : (selectedPdfInfo.subject === "English" ? P1_ENGLISH_UNITS : P1_KINYARWANDA_UNITS))).map((unit, idx) => (
+                                            <Link 
+                                                key={idx}
+                                                to={`/assessment?level=${encodeURIComponent(selectedPdfInfo.level)}&subject=${encodeURIComponent(selectedPdfInfo.subject)}&unit=${encodeURIComponent(unit)}`}
+                                                className="unit-nav-btn"
+                                            >
+                                                {unit} <i className="uil uil-arrow-right"></i>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div style={{ textAlign: 'center', background: 'var(--card-bg)', padding: '3rem', borderRadius: '15px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', maxWidth: '500px' }}>
+                                        <i className="uil uil-clipboard-notes" style={{ fontSize: '4rem', color: '#6c63ff', marginBottom: '1rem', display: 'block' }}></i>
+                                        <p style={{ marginBottom: '2rem', fontSize: '1.2rem', color: 'var(--text-secondary)' }}>You are about to start the end-of-unit assessment for this subject.</p>
+                                        <Link 
+                                            to={`/assessment?level=${encodeURIComponent(selectedPdfInfo.level)}&subject=${encodeURIComponent(selectedPdfInfo.subject)}`} 
+                                            className="btn btn-primary"
+                                            style={{ padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '50px' }}
+                                        >
+                                            Start Assessment <i className="uil uil-play"></i>
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Units Modal for Specific Subjects */}
             {selectedUnitSubject && ((selectedUnitSubject.level === "Primary 1" && (selectedUnitSubject.subject === "Mathematics" || selectedUnitSubject.subject === "English" || selectedUnitSubject.subject === "Kinyarwanda")) || (selectedUnitSubject.level === "Senior 3" && selectedUnitSubject.subject === "Mathematics")) && (

@@ -6,6 +6,7 @@ const Navbar = ({ setIsChatOpen }) => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
     const [user, setUser] = useState(null);
     const [isNavShowing, setIsNavShowing] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const isExamPage = location.pathname.includes('/take-exam') || location.pathname.includes('/assessment') || location.pathname.includes('/create-exam');
 
@@ -17,7 +18,6 @@ const Navbar = ({ setIsChatOpen }) => {
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setUser(JSON.parse(storedUser));
         }
     }, []);
@@ -28,49 +28,66 @@ const Navbar = ({ setIsChatOpen }) => {
 
     return (
         <nav className="navbar">
+            {/* Left Sidebar Menu */}
+            <div className={`left-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div className="sidebar-header">
+                    <h3>Menu Options</h3>
+                    <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>
+                        <i className="uil uil-multiply"></i>
+                    </button>
+                </div>
+                <div className="sidebar-content">
+                    <button onClick={toggleTheme} className="sidebar-link">
+                        <i className={theme === 'light' ? "uil uil-moon" : "uil uil-sun"}></i>
+                        {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                    </button>
+                    {!user ? (
+                        <Link to="/login" className="sidebar-link" onClick={() => setIsSidebarOpen(false)}>
+                            <i className="uil uil-sign-in-alt"></i> Login
+                        </Link>
+                    ) : (
+                        <button className="sidebar-link" style={{ color: '#ff4c60', marginTop: 'auto' }} onClick={() => {
+                            localStorage.removeItem('user'); 
+                            localStorage.removeItem('token'); 
+                            window.location.href='/';
+                        }}>
+                            <i className="uil uil-sign-out-alt"></i> Logout
+                        </button>
+                    )}
+                    
+                    {user && (
+                        <Link to={
+                            user?.role?.toLowerCase() === 'admin' ? '/admin-dashboard' :
+                            user?.role?.toLowerCase() === 'teacher' ? '/teacher-dashboard' :
+                            '/dashboard'
+                        } className="sidebar-link" onClick={() => setIsSidebarOpen(false)}>
+                            <i className="uil uil-dashboard"></i> Dashboard
+                        </Link>
+                    )}
+                </div>
+            </div>
+            {/* Overlay for closing sidebar when clicking outside */}
+            {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
             <div className="container nav-container">
-                <Link to="/" className="nav-logo">
-                    <div className="logo-icon">
-                        <i className="uil uil-graduation-cap"></i>
-                    </div>
-                    <h4>Educational_Bridge</h4>
-                </Link>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)} title="Open Menu">
+                        <i className="uil uil-apps"></i>
+                    </button>
+                    <Link to="/" className="nav-logo">
+                        <div className="logo-icon">
+                            <i className="uil uil-graduation-cap"></i>
+                        </div>
+                        <h4>Educational_Bridge</h4>
+                    </Link>
+                </div>
                 <ul className={`nav-menu ${isNavShowing ? 'show-nav' : ''}`}>
                     <li><Link to="/" onClick={() => setIsNavShowing(false)}>Home</Link></li>
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
-                    {!isExamPage && (
-                        <li>
-                            <Link to="#" className="jeremie-nav-link" style={{ color: '#007bff', fontWeight: 'bold' }} onClick={(e) => {
-                                e.preventDefault();
-                                setIsNavShowing(false);
-                                if (!localStorage.getItem('token')) {
-                                    window.location.href = '/login';
-                                } else {
-                                    setIsChatOpen(true);
-                                }
-                            }}>Jeremie Ai</Link>
-                        </li>
-                    )}
-                     {user?.role?.toLowerCase() === 'admin' && <li><Link to="/admin-dashboard" onClick={() => setIsNavShowing(false)}>Admin Dash</Link></li>}
-                    {user?.role?.toLowerCase() === 'teacher' && <li><Link to="/teacher-dashboard" onClick={() => setIsNavShowing(false)}>Teacher Dash</Link></li>}
-                    {user?.role?.toLowerCase() === 'student' && <li><Link to="/dashboard" onClick={() => setIsNavShowing(false)}>Dashboard</Link></li>}
-                    {!user && <li><Link to="/login" className="nav-btn-link" onClick={() => setIsNavShowing(false)}>Login</Link></li>}
+                    {/* Jeremie Ai moved to global floating button */}
                     {!user && <li><Link to="/signup" className="nav-btn-link logout-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>}
-                    {user && (
-                        <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            {user.avatar_url && (
-                                <img src={user.avatar_url.startsWith('http') ? user.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${user.avatar_url}`} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #6c63ff' }} />
-                            )}
-                            <span className="nav-btn-link logout-btn" onClick={() => {localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href='/';}}>Logout</span>
-                        </li>
-                    )}
-                    <li>
-                        <button onClick={toggleTheme} className="theme-toggle-btn" style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Toggle Light/Dark Theme">
-                            <i className={theme === 'light' ? "uil uil-moon" : "uil uil-sun"}></i>
-                        </button>
-                    </li>
                 </ul>
                 <div className="nav-toggle">
                     <button id="open-menu-btn" onClick={() => setIsNavShowing(true)} style={{ display: isNavShowing ? 'none' : 'block' }}> <i className="uil uil-bars"></i></button>

@@ -45,3 +45,12 @@
 
 .testimonial-item:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(255, 0, 0, 0.5); }
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: #6c63ff; }
+}

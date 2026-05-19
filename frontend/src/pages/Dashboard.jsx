@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import Chat from '../components/Chat';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -187,11 +188,19 @@ const Dashboard = () => {
                                         </td>
                                         <td>{new Date(item.submitted_at).toLocaleDateString()}</td>
                                     </tr>
-                                {))}
+                                ))}
                             </tbody>
                         </table>
                     </div>
                 )}
+            </div>
+
+            <div className="dashboard-chat-section" style={{ marginTop: '3rem' }}>
+                <div className="section-header">
+                    <h2>Direct Messaging</h2>
+                    <p>Connect with your teachers to ask questions and get help.</p>
+                </div>
+                <Chat currentUser={userState} isTeacher={false} />
             </div>
 
             <style jsx>{`

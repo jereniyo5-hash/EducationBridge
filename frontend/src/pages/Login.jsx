@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import './Auth.css';
 
 const Login = () => {
@@ -62,9 +63,47 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLogin = () => {
-        alert("Google Authentication integration would go here. (Requires Client ID configuration)");
-    };
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                
+                const response = await fetch(`${API_URL}/api/google-auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ access_token: tokenResponse.access_token })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (data.user.role === 'admin') {
+                        navigate('/admin-dashboard');
+                    } else if (data.user.role === 'teacher') {
+                        navigate('/teacher-dashboard');
+                    } else {
+                        navigate('/dashboard');
+                    }
+                    window.location.reload();
+                } else {
+                    setError(data.error || 'Google authentication failed.');
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error(err);
+                setError('Network error during Google authentication.');
+                setLoading(false);
+            }
+        },
+        onError: () => {
+            setError('Google Login was unsuccessful.');
+        }
+    });
 
     return (
         <div className="auth-container">

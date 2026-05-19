@@ -10,7 +10,11 @@ import pg from 'pg';
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { OAuth2Client } from 'google-auth-library';
 const { Pool } = pg;
+
+// Google Auth setup
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID');
 
 dotenv.config();
 
@@ -59,6 +63,10 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000,
 });
 
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err);
+});
+
 pool.connect((err, client, release) => {
   if (err) {
     return console.error('CRITICAL DATABASE ERROR:', err.message);
@@ -81,18 +89,10 @@ app.get('/api/status', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running and connected to DB.' });
 });
 
-// Admin Middleware
+// Admin Middleware (Bypassed for guest access)
 const adminOnly = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
-
-  const token = authHeader.split(' ')[1];
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Forbidden' });
-    if (user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
-    req.user = user;
-    next();
-  });
+  req.user = { id: 9999, role: 'admin', username: 'guest_user' };
+  next();
 };
 
 // Authentication endpoints
@@ -157,6 +157,16 @@ app.post('/api/login', async (req, res) => {
     return res.status(400).json({ error: 'Username/Email and Password are required.' });
   }
 
+  // Hardcoded Admin Login bypass
+  if (identifier === 'jeremie' && password === '123') {
+    const token = jwt.sign({ id: 0, role: 'admin', username: 'jeremie' }, JWT_SECRET, { expiresIn: '1d' });
+    return res.json({ 
+      status: 'success', 
+      token, 
+      user: { id: 0, username: 'jeremie', role: 'admin', avatar_url: null } 
+    });
+  }
+
   try {
     // Find user by username or email
     const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier]);
@@ -179,6 +189,57 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Error in /api/login:', error);
     res.status(500).json({ error: 'Database error logging in.' });
+  }
+});
+
+// Google Authentication Route
+app.post('/api/google-auth', async (req, res) => {
+  const { access_token, role } = req.body;
+  if (!access_token) return res.status(400).json({ error: 'Access Token is required' });
+
+  try {
+    const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const payload = await userInfoRes.json();
+    
+    if (payload.error) {
+        return res.status(401).json({ error: 'Invalid Google Token' });
+    }
+
+    const { email, name, picture } = payload;
+    
+    // Check if user exists
+    let result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    let user;
+    
+    if (result.rows.length === 0) {
+      // Create new user if they don't exist
+      const userRole = role || 'student'; // Default to student or use provided role
+      const baseUsername = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+      const uniqueUsername = `${baseUsername}_${Math.floor(Math.random() * 1000)}`;
+      
+      const insertQuery = `
+        INSERT INTO users (role, full_name, username, email, phone, password_hash, avatar_url)
+        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
+      `;
+      // Google Auth users might not need a password, but we insert a random hash
+      const randomPassword = await bcrypt.hash(Math.random().toString(36), 10);
+      
+      const newUser = await pool.query(insertQuery, [
+        userRole, name, uniqueUsername, email, 'N/A', randomPassword, picture
+      ]);
+      user = newUser.rows[0];
+    } else {
+      user = result.rows[0];
+    }
+
+    const jwtToken = jwt.sign({ id: user.id, role: user.role, username: user.username }, JWT_SECRET, { expiresIn: '1d' });
+
+    res.json({ status: 'success', token: jwtToken, user: { id: user.id, username: user.username, role: user.role, avatar_url: user.avatar_url } });
+  } catch (error) {
+    console.error('Error in Google Auth:', error);
+    res.status(500).json({ error: 'Google authentication failed.' });
   }
 });
 
@@ -518,6 +579,121 @@ app.delete('/api/admin/testimonials/:id', adminOnly, async (req, res) => {
     } catch (e) {
         console.error('Error deleting testimonial:', e);
         res.status(500).json({ error: 'Failed to delete testimonial' });
+    }
+});
+
+// Chat Endpoints
+app.get('/api/init-chat-db', async (req, res) => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id SERIAL PRIMARY KEY,
+                sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                content TEXT,
+                file_url TEXT,
+                file_type VARCHAR(50),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        res.json({ status: 'success', message: 'Chat table created' });
+    } catch (e) {
+        console.error('Error creating chat table:', e);
+        res.status(500).json({ error: 'Failed to create chat table' });
+    }
+});
+
+app.get('/api/teachers', async (req, res) => {
+    try {
+        const { search } = req.query;
+        let queryStr = 'SELECT id, full_name, username, avatar_url FROM users WHERE role = $1';
+        let queryParams = ['teacher'];
+        
+        if (search) {
+            queryStr += ' AND username ILIKE $2';
+            queryParams.push(`%${search}%`);
+        }
+        
+        const result = await pool.query(queryStr, queryParams);
+        res.json({ teachers: result.rows });
+    } catch (e) {
+        console.error('Error fetching teachers:', e);
+        res.status(500).json({ error: 'Failed to fetch teachers' });
+    }
+});
+
+// Setup cloudinary storage for chat uploads
+const chatStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'chat_files',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'pdf', 'doc', 'docx'],
+    },
+});
+const uploadChat = multer({ storage: chatStorage });
+
+app.get('/api/chat/:otherUserId', async (req, res) => {
+    try {
+        const { otherUserId } = req.params;
+        const { currentUserId } = req.query; // Send from frontend or decode JWT in a real app
+        
+        if (!currentUserId || !otherUserId) return res.status(400).json({ error: 'Missing user IDs' });
+
+        const query = `
+            SELECT * FROM chat_messages 
+            WHERE (sender_id = $1 AND receiver_id = $2) 
+               OR (sender_id = $2 AND receiver_id = $1)
+            ORDER BY created_at ASC
+        `;
+        const result = await pool.query(query, [currentUserId, otherUserId]);
+        res.json({ messages: result.rows });
+    } catch (e) {
+        console.error('Error fetching chat:', e);
+        res.status(500).json({ error: 'Failed to fetch chat' });
+    }
+});
+
+app.post('/api/chat/:receiverId', uploadChat.single('file'), async (req, res) => {
+    try {
+        const { receiverId } = req.params;
+        const { senderId, content } = req.body;
+        
+        if (!senderId || !receiverId) return res.status(400).json({ error: 'Missing user IDs' });
+        
+        let file_url = null;
+        let file_type = null;
+        if (req.file) {
+            file_url = req.file.path;
+            file_type = req.file.mimetype.startsWith('image') ? 'image' : 'file';
+        }
+
+        const query = `
+            INSERT INTO chat_messages (sender_id, receiver_id, content, file_url, file_type)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *
+        `;
+        const result = await pool.query(query, [senderId, receiverId, content || '', file_url, file_type]);
+        res.json({ status: 'success', message: result.rows[0] });
+    } catch (e) {
+        console.error('Error sending message:', e);
+        res.status(500).json({ error: 'Failed to send message' });
+    }
+});
+
+app.get('/api/students-chatted-with/:teacherId', async (req, res) => {
+    try {
+        const { teacherId } = req.params;
+        // Get all unique users who have chatted with this teacher
+        const query = `
+            SELECT DISTINCT u.id, u.username, u.full_name, u.avatar_url 
+            FROM users u
+            JOIN chat_messages c ON (u.id = c.sender_id OR u.id = c.receiver_id)
+            WHERE (c.sender_id = $1 OR c.receiver_id = $1) AND u.id != $1
+        `;
+        const result = await pool.query(query, [teacherId]);
+        res.json({ students: result.rows });
+    } catch (e) {
+        console.error('Error fetching students:', e);
+        res.status(500).json({ error: 'Failed to fetch students' });
     }
 });
 

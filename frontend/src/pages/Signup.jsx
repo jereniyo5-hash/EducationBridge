@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import './Auth.css';
 
 const Signup = () => {
@@ -75,10 +76,50 @@ const Signup = () => {
         }
     };
 
-    const handleGoogleSignup = () => {
-        alert("Google Authentication integration would go here. (Requires Client ID configuration)");
-        // In a real app: window.location.href = `${API_URL}/api/auth/google`;
-    };
+    const handleGoogleSignup = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                
+                const response = await fetch(`${API_URL}/api/google-auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        access_token: tokenResponse.access_token,
+                        role: formData.role // Send selected role
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (data.user.role === 'admin') {
+                        navigate('/admin-dashboard');
+                    } else if (data.user.role === 'teacher') {
+                        navigate('/teacher-dashboard');
+                    } else {
+                        navigate('/dashboard');
+                    }
+                    window.location.reload();
+                } else {
+                    setError(data.error || 'Google signup failed.');
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error(err);
+                setError('Network error during Google signup.');
+                setLoading(false);
+            }
+        },
+        onError: () => {
+            setError('Google Signup was unsuccessful.');
+        }
+    });
 
     return (
         <div className="auth-container">
@@ -117,10 +158,16 @@ const Signup = () => {
                         <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
                     </div>
 
-                    <div className="file-input-wrapper">
-                        <label className="file-label">
-                            <i className="uil uil-image-upload"></i>
-                            <span>{formData.avatar ? formData.avatar.name : "Upload Profile Image"}</span>
+                    <div className="avatar-upload-container">
+                        <label className="avatar-upload-label">
+                            {formData.avatar ? (
+                                <img src={URL.createObjectURL(formData.avatar)} alt="Avatar Preview" className="avatar-preview" />
+                            ) : (
+                                <div className="avatar-placeholder">
+                                    <i className="uil uil-camera"></i>
+                                    <span>Upload</span>
+                                </div>
+                            )}
                             <input type="file" name="avatar" accept="image/*" onChange={handleChange} />
                         </label>
                     </div>

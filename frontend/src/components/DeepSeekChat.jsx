@@ -105,7 +105,42 @@ const DeepSeekChat = ({ isChatOpen, setIsChatOpen }) => {
         }
     };
 
-    if (!isChatOpen) return null;
+    if (!isChatOpen) {
+        return (
+            <button 
+                className="floating-chat-btn" 
+                onClick={() => {
+                    if (!localStorage.getItem('token')) {
+                        window.location.href = '/login';
+                    } else {
+                        setIsChatOpen(true);
+                    }
+                }}
+                style={{
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                    backgroundColor: 'var(--accent-yellow, #fbc02d)',
+                    color: '#000000',
+                    border: 'none',
+                    borderRadius: '50px',
+                    padding: '12px 24px',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 8px 25px rgba(251, 192, 45, 0.4)',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    transition: 'all 0.3s ease',
+                }}
+            >
+                <i className="uil uil-comment-dots" style={{ fontSize: '1.4rem' }}></i>
+                Jeremie Ai
+            </button>
+        );
+    }
 
     return (
         <div className="chat-modal-overlay">
