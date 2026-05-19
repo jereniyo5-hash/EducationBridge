@@ -2,6 +2,24 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
+const AnimatedAvatar = () => {
+    const name = "JEREMIE";
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => (prevIndex + 1) % name.length);
+        }, 500); // Change letter every 500ms
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="logo-icon avatar-logo" style={{ fontWeight: 'bold', fontSize: '1.4rem', color: 'white' }}>
+            {name[index]}
+        </div>
+    );
+};
+
 const Navbar = ({ setIsChatOpen }) => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const [user, setUser] = useState(null);
@@ -28,8 +46,8 @@ const Navbar = ({ setIsChatOpen }) => {
 
     return (
         <nav className="navbar">
-            {/* Left Sidebar Menu */}
-            <div className={`left-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            {/* Right Sidebar Menu */}
+            <div className={`right-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <h3>Menu Options</h3>
                     <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>
@@ -71,14 +89,11 @@ const Navbar = ({ setIsChatOpen }) => {
 
             <div className="container nav-container">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)} title="Open Menu">
-                        <i className="uil uil-apps"></i>
-                    </button>
                     <Link to="/" className="nav-logo">
-                        <div className="logo-icon">
-                            <i className="uil uil-graduation-cap"></i>
+                        <AnimatedAvatar />
+                        <div className="animated-logo-text">
+                            <span className="static-text">EDUCATION BRIDGE</span>
                         </div>
-                        <h4>Educational_Bridge</h4>
                     </Link>
                 </div>
                 <ul className={`nav-menu ${isNavShowing ? 'show-nav' : ''}`}>
@@ -86,6 +101,16 @@ const Navbar = ({ setIsChatOpen }) => {
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
+                    <li className="desktop-only" style={{ display: 'flex', alignItems: 'center' }}>
+                        <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)} title="Settings">
+                            <i className="uil uil-setting"></i>
+                        </button>
+                    </li>
+                    <li className="mobile-only">
+                        <button className="mobile-setting-btn" onClick={() => { setIsNavShowing(false); setIsSidebarOpen(true); }}>
+                            <i className="uil uil-setting"></i> Settings
+                        </button>
+                    </li>
                     {/* Jeremie Ai moved to global floating button */}
                     {!user && <li><Link to="/signup" className="nav-btn-link logout-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>}
                 </ul>

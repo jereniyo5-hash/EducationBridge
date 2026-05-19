@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import Animated3DBackground from '../components/Animated3DBackground';
 import './Home.css';
 
 const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
@@ -145,16 +146,8 @@ const Home = ({ setIsChatOpen }) => {
         <div className="home-page-container">
             {/* Animated Video Hero Section */}
             <section className="hero-video-section">
-                {/* YouTube iframe for the animated background */}
-                <iframe
-                    className="hero-video-bg"
-                    src="https://www.youtube.com/embed/kr-eIQ_SzYk?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&playsinline=1&playlist=kr-eIQ_SzYk&modestbranding=1"
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    style={{ pointerEvents: 'none' }}
-                ></iframe>
+                {/* 3D Animated Background */}
+                <Animated3DBackground />
 
                 <div className="hero-slide-overlay">
                     <div className="container hero-content">
