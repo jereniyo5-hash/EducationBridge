@@ -178,7 +178,7 @@ const About = () => {
                             animation: 'spin 10s linear infinite'
                         }}></div>
                         <img 
-                            src="/uploads/avatars/avatar-1776509310514.jpg" 
+                            src="/images/jeremie.jpg" 
                             alt="Niyogisubizo Jeremie" 
                             style={{ 
                                 width: '220px', height: '220px', objectFit: 'cover', 

@@ -159,7 +159,6 @@ const Home = ({ setIsChatOpen }) => {
                 <div className="hero-slide-overlay">
                     <div className="container hero-content">
                         <h1 className="gradient-text text-white">Welcome to the Educational_Bridge platform</h1>
-                        <p>Jeremie Niyogisubizo.</p>
                         <div className="hero-buttons">
                             <Link to="/signup" className="btn btn-primary">Get Started</Link>
                             <Link to="/about" className="btn btn-secondary">Learn More</Link>
