@@ -1,4 +1,8 @@
--- Drop the existing table if it exists to ensure a clean slate
+-- Drop the existing tables if they exist to ensure a clean slate
+DROP TABLE IF EXISTS student_submissions CASCADE;
+DROP TABLE IF EXISTS chat_messages CASCADE;
+DROP TABLE IF EXISTS teacher_exams CASCADE;
+DROP TABLE IF EXISTS testimonials CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- Create the users table with the correct schema
@@ -17,7 +21,7 @@ CREATE TABLE users (
 -- Create table for exams uploaded by teachers
 CREATE TABLE IF NOT EXISTS teacher_exams (
     id SERIAL PRIMARY KEY,
-    teacher_id INTEGER REFERENCES users(id),
+    teacher_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     teacher_name VARCHAR(255) NOT NULL,
     year_level VARCHAR(50) NOT NULL,
     subject_name VARCHAR(100) NOT NULL,
@@ -42,9 +46,20 @@ CREATE TABLE IF NOT EXISTS testimonials (
 CREATE TABLE IF NOT EXISTS student_submissions (
     id SERIAL PRIMARY KEY,
     exam_id INTEGER REFERENCES teacher_exams(id) ON DELETE CASCADE,
-    student_id INTEGER REFERENCES users(id),
+    student_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     student_name VARCHAR(255) NOT NULL,
     answers_text TEXT NOT NULL,
     score INTEGER,
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create table for chat messages
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT,
+    file_url TEXT,
+    file_type VARCHAR(50),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
