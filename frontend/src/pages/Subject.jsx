@@ -63,6 +63,16 @@ const P1_ENGLISH_UNITS = [
 ];
 
 
+const getResponsivePdfUrl = (url) => {
+    if (!url) return '';
+    if (url.includes('drive.google.com')) {
+        return url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
+    }
+    // Google Docs Viewer doesn't work for these specific URLs as the server blocks it.
+    // We will use the direct URL so the browser can handle the PDF natively.
+    return url;
+};
+
 const Subject = () => {
     const [searchParams] = useSearchParams();
     const levelKeys = Object.keys(LEVELS);
@@ -297,8 +307,8 @@ const Subject = () => {
             {/* PDF Viewer Modal */}
             {selectedPdfInfo && (
                 <div className="units-modal-overlay" onClick={() => { setSelectedPdfInfo(null); setIsFlipped(false); }} style={{ zIndex: 3000, padding: 0 }}>
-                    <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100vh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)', perspective: '1500px' }} onClick={e => e.stopPropagation()}>
-                        <div className="units-modal-header" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card-bg)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 10 }}>
+                    <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100dvh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)', perspective: '1500px' }} onClick={e => e.stopPropagation()}>
+                        <div className="units-modal-header" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--card-bg)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 10 }}>
                             <button 
                                 onClick={() => {
                                     if (isFlipped) {
@@ -308,8 +318,8 @@ const Subject = () => {
                                         setIsFlipped(false);
                                     }
                                 }} 
-                                className="btn btn-secondary" 
-                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}
+                                className="btn" 
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem', borderRadius: '30px', background: 'var(--search-bg)', color: 'var(--text-primary)', border: '1px solid var(--card-border)' }}
                             >
                                 <i className="uil uil-arrow-left" style={{ fontSize: '1.2rem' }}></i> {isFlipped ? "Back to Book" : "Back to Subjects"}
                             </button>
@@ -332,7 +342,7 @@ const Subject = () => {
                             {/* FRONT: PDF VIEW */}
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', background: '#f5f5f5' }}>
                                 <iframe 
-                                    src={selectedPdfInfo.url.includes('drive.google.com') ? selectedPdfInfo.url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview') : selectedPdfInfo.url} 
+                                    src={getResponsivePdfUrl(selectedPdfInfo.url)} 
                                     width="100%" 
                                     height="100%" 
                                     style={{ border: 'none' }} 
