@@ -71,9 +71,10 @@ const getResponsivePdfUrl = (url) => {
     if (url.includes('drive.google.com')) {
         return url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
     }
-    // Route through proxy to avoid CORS for our mobile PdfViewer
+    // Route through backend proxy to avoid CORS and invalid HTTP header crashes
     if (url.includes('elearning.reb.rw')) {
-        return url.replace('https://elearning.reb.rw', '/proxy-reb');
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        return `${API_URL}/api/proxy-pdf?url=${encodeURIComponent(url)}`;
     }
     return url;
 };

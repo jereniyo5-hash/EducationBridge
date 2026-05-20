@@ -13,11 +13,6 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-      },
-      '/proxy-reb': {
-        target: 'https://elearning.reb.rw',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/proxy-reb/, '')
       }
     }
   }

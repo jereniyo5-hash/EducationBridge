@@ -89,6 +89,45 @@ app.get('/api/status', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running and connected to DB.' });
 });
 
+import https from 'https';
+
+app.get('/api/proxy-pdf', (req, res) => {
+    const targetUrl = req.query.url;
+    if (!targetUrl) return res.status(400).send('Missing url');
+
+    try {
+        const parsedUrl = new URL(targetUrl);
+        const options = {
+            hostname: parsedUrl.hostname,
+            port: parsedUrl.port || 443,
+            path: parsedUrl.pathname + parsedUrl.search,
+            method: 'GET',
+            insecureHTTPParser: true, // Bypass strict header parsing that crashes on invalid headers
+        };
+
+        const proxyReq = https.request(options, (proxyRes) => {
+            const headers = { ...proxyRes.headers };
+            delete headers['feature-policy']; // Remove the header causing "Invalid header value char"
+            
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Content-Type', headers['content-type'] || 'application/pdf');
+            res.status(proxyRes.statusCode);
+            
+            proxyRes.pipe(res);
+        });
+
+        proxyReq.on('error', (err) => {
+            console.error('Proxy error:', err);
+            res.status(500).send('Proxy error');
+        });
+
+        proxyReq.end();
+    } catch (error) {
+        console.error('URL Parsing error:', error);
+        res.status(400).send('Invalid URL');
+    }
+});
+
 // Admin Middleware (Bypassed for guest access)
 const adminOnly = (req, res, next) => {
   req.user = { id: 9999, role: 'admin', username: 'guest_user' };
