@@ -97,11 +97,17 @@ app.get('/api/proxy-pdf', (req, res) => {
 
     try {
         const parsedUrl = new URL(targetUrl);
+        const requestHeaders = { ...req.headers };
+        delete requestHeaders.host; // Let the https module set the correct host
+        delete requestHeaders.origin;
+        delete requestHeaders.referer;
+
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port || 443,
             path: parsedUrl.pathname + parsedUrl.search,
             method: 'GET',
+            headers: requestHeaders,
             insecureHTTPParser: true, // Bypass strict header parsing that crashes on invalid headers
         };
 
@@ -109,10 +115,22 @@ app.get('/api/proxy-pdf', (req, res) => {
             const headers = { ...proxyRes.headers };
             delete headers['feature-policy']; // Remove the header causing "Invalid header value char"
             
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Content-Type', headers['content-type'] || 'application/pdf');
-            res.status(proxyRes.statusCode);
+            // Pass all remaining headers to the client
+            Object.entries(headers).forEach(([key, value]) => {
+                if (key.toLowerCase() !== 'access-control-allow-origin') {
+                    res.setHeader(key, value);
+                }
+            });
             
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Encoding');
+            
+            // Default Content-Type if missing
+            if (!headers['content-type']) {
+                res.setHeader('Content-Type', 'application/pdf');
+            }
+            
+            res.status(proxyRes.statusCode);
             proxyRes.pipe(res);
         });
 
