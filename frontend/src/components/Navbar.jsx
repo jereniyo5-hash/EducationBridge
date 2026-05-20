@@ -101,16 +101,15 @@ const Navbar = ({ setIsChatOpen }) => {
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
-                    <li className="desktop-only" style={{ display: 'flex', alignItems: 'center' }}>
-                        <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)} title="Settings">
-                            <i className="uil uil-setting"></i>
-                        </button>
-                    </li>
-                    <li className="mobile-only">
-                        <button className="mobile-setting-btn" onClick={() => { setIsNavShowing(false); setIsSidebarOpen(true); }}>
-                            <i className="uil uil-setting"></i> Settings
-                        </button>
-                    </li>
+                    {user && (
+                        <li>
+                            <Link to={
+                                user?.role?.toLowerCase() === 'admin' ? '/admin-dashboard' :
+                                user?.role?.toLowerCase() === 'teacher' ? '/teacher-dashboard' :
+                                '/dashboard'
+                            } onClick={() => setIsNavShowing(false)}>Dashboard</Link>
+                        </li>
+                    )}
                     {!user ? (
                         <>
                             <li><Link to="/login" className="nav-btn-link login-btn" style={{ background: 'transparent', border: '1px solid white', color: 'white' }} onClick={() => setIsNavShowing(false)}>Login</Link></li>
@@ -127,6 +126,16 @@ const Navbar = ({ setIsChatOpen }) => {
                             </button>
                         </li>
                     )}
+                    <li className="desktop-only" style={{ display: 'flex', alignItems: 'center' }}>
+                        <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)} title="Settings">
+                            <i className="uil uil-setting"></i>
+                        </button>
+                    </li>
+                    <li className="mobile-only">
+                        <button className="mobile-setting-btn" onClick={() => { setIsNavShowing(false); setIsSidebarOpen(true); }}>
+                            <i className="uil uil-setting"></i> Settings
+                        </button>
+                    </li>
                 </ul>
                 <div className="nav-toggle">
                     <button id="open-menu-btn" onClick={() => setIsNavShowing(true)} style={{ display: isNavShowing ? 'none' : 'block' }}> <i className="uil uil-bars"></i></button>

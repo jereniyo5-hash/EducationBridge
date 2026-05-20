@@ -123,7 +123,21 @@ const Signup = () => {
 
     return (
         <div className="auth-container">
-            <div className="auth-card glass-morphism">
+            {/* Torch Spotlight Scene */}
+            <div className="spotlight-scene">
+                <div className="torch-lamp">
+                    <div className="lamp-shade-side"></div>
+                    <div className="lamp-bulb-bright-side"></div>
+                    <div className="lamp-light-cone-side"></div>
+                </div>
+                <div className="torch-lamp-left">
+                    <div className="lamp-shade-side"></div>
+                    <div className="lamp-bulb-bright-side"></div>
+                    <div className="lamp-light-cone-side"></div>
+                </div>
+            </div>
+
+            <div className="auth-card glass-morphism" style={{ zIndex: 10 }}>
                 <div className="auth-header">
                     <h2>Join <span className="gradient-text">Educational_Bridge</span></h2>
                     <p>Unlock your learning potential today.</p>

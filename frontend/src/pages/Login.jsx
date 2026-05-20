@@ -114,6 +114,11 @@ const Login = () => {
                     <div className="lamp-bulb-bright-side"></div>
                     <div className="lamp-light-cone-side"></div>
                 </div>
+                <div className="torch-lamp-left">
+                    <div className="lamp-shade-side"></div>
+                    <div className="lamp-bulb-bright-side"></div>
+                    <div className="lamp-light-cone-side"></div>
+                </div>
             </div>
 
             <div className="auth-card glass-morphism" style={{ zIndex: 10 }}>

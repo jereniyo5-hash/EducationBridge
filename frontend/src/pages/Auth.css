@@ -281,6 +281,17 @@
     align-items: center;
 }
 
+/* Torch Lamp from Left */
+.torch-lamp-left {
+    position: absolute;
+    top: 50%;
+    left: -60px;
+    transform: translateY(-50%) rotate(-90deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .lamp-shade-side {
     width: 120px;
     height: 60px;
