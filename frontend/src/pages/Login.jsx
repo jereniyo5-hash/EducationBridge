@@ -107,7 +107,16 @@ const Login = () => {
 
     return (
         <div className="auth-container">
-            <div className="auth-card glass-morphism">
+            {/* Torch Spotlight Scene */}
+            <div className="spotlight-scene">
+                <div className="torch-lamp">
+                    <div className="lamp-shade-side"></div>
+                    <div className="lamp-bulb-bright-side"></div>
+                    <div className="lamp-light-cone-side"></div>
+                </div>
+            </div>
+
+            <div className="auth-card glass-morphism" style={{ zIndex: 10 }}>
                 <div className="auth-header">
                     <h2>Welcome <span className="gradient-text">Back</span></h2>
                     <p>Continue your learning journey.</p>
