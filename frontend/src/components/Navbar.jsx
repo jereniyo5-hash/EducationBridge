@@ -111,8 +111,22 @@ const Navbar = ({ setIsChatOpen }) => {
                             <i className="uil uil-setting"></i> Settings
                         </button>
                     </li>
-                    {/* Jeremie Ai moved to global floating button */}
-                    {!user && <li><Link to="/signup" className="nav-btn-link logout-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>}
+                    {!user ? (
+                        <>
+                            <li><Link to="/login" className="nav-btn-link login-btn" style={{ background: 'transparent', border: '1px solid white', color: 'white' }} onClick={() => setIsNavShowing(false)}>Login</Link></li>
+                            <li><Link to="/signup" className="nav-btn-link signup-btn" onClick={() => setIsNavShowing(false)}>Sign Up</Link></li>
+                        </>
+                    ) : (
+                        <li>
+                            <button className="nav-btn-link logout-btn" style={{ background: '#ff4c60', border: 'none', cursor: 'pointer', color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', fontWeight: 'bold' }} onClick={() => {
+                                localStorage.removeItem('user'); 
+                                localStorage.removeItem('token'); 
+                                window.location.href='/';
+                            }}>
+                                Logout
+                            </button>
+                        </li>
+                    )}
                 </ul>
                 <div className="nav-toggle">
                     <button id="open-menu-btn" onClick={() => setIsNavShowing(true)} style={{ display: isNavShowing ? 'none' : 'block' }}> <i className="uil uil-bars"></i></button>

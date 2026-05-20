@@ -22,20 +22,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import DeepSeekChat from './components/DeepSeekChat';
 
 function App() {
-  useEffect(() => {
-    // Auto-login as a mock admin user if no user is found
-    // This allows access to all features without requiring login
-    if (!localStorage.getItem('token')) {
-      localStorage.setItem('token', 'mock_guest_token');
-      localStorage.setItem('user', JSON.stringify({
-        id: 9999,
-        role: 'admin',
-        username: 'guest_user',
-        full_name: 'Guest User',
-        email: 'guest@example.com'
-      }));
-    }
-  }, []);
+
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
