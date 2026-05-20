@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/proxy-reb/:path*",
+      "destination": "https://elearning.reb.rw/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

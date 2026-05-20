@@ -63,13 +63,18 @@ const P1_ENGLISH_UNITS = [
 ];
 
 
+import PdfViewer from '../components/PdfViewer';
+
+
 const getResponsivePdfUrl = (url) => {
     if (!url) return '';
     if (url.includes('drive.google.com')) {
         return url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
     }
-    // Google Docs Viewer doesn't work for these specific URLs as the server blocks it.
-    // We will use the direct URL so the browser can handle the PDF natively.
+    // Route through proxy to avoid CORS for our mobile PdfViewer
+    if (url.includes('elearning.reb.rw')) {
+        return url.replace('https://elearning.reb.rw', '/proxy-reb');
+    }
     return url;
 };
 
@@ -341,13 +346,18 @@ const Subject = () => {
                         <div style={{ flex: 1, width: '100%', position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
                             {/* FRONT: PDF VIEW */}
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', background: '#f5f5f5' }}>
-                                <iframe 
-                                    src={getResponsivePdfUrl(selectedPdfInfo.url)} 
-                                    width="100%" 
-                                    height="100%" 
-                                    style={{ border: 'none' }} 
-                                    title="PDF Viewer"
-                                ></iframe>
+                                <div className="pdf-viewer-mobile">
+                                    <PdfViewer url={getResponsivePdfUrl(selectedPdfInfo.url)} />
+                                </div>
+                                <div className="pdf-viewer-desktop">
+                                    <iframe 
+                                        src={getResponsivePdfUrl(selectedPdfInfo.url)} 
+                                        width="100%" 
+                                        height="100%" 
+                                        style={{ border: 'none' }} 
+                                        title="PDF Viewer"
+                                    ></iframe>
+                                </div>
                             </div>
                             
                             {/* BACK: ASSESSMENT VIEW */}
