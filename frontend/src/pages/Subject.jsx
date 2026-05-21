@@ -227,6 +227,7 @@ const Subject = () => {
                                                     src={subjectImages[subject] || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=500&q=80'} 
                                                     alt={subject} 
                                                     className="online-photo"
+                                                    loading="lazy"
                                                 />
                                             </div>
                                             <div className="subject-card-info">

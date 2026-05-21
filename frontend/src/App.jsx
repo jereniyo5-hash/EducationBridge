@@ -3,7 +3,6 @@ import React, { useState, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
-import DeepSeekChat from './components/DeepSeekChat';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Lazy loaded pages
@@ -21,6 +20,7 @@ const ViewSubmissions = React.lazy(() => import('./pages/ViewSubmissions'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const TeacherDashboard = React.lazy(() => import('./pages/TeacherDashboard'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const DeepSeekChat = React.lazy(() => import('./components/DeepSeekChat'));
 
 function App() {
 
@@ -50,7 +50,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </Suspense>
-      <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
+      <Suspense fallback={null}>
+        <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
+      </Suspense>
       <Footer />
     </BrowserRouter>
   );

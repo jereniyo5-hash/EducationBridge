@@ -134,7 +134,7 @@ const About = () => {
                             <SwiperSlide key={testimonial.id}>
                                 <div className="interactive-card" style={{ padding: '2.5rem', background: 'var(--card-bg)', borderRadius: '15px', border: '1px solid var(--card-border)', height: '100%' }}>
                                     {testimonial.avatar_url ? (
-                                        <img src={testimonial.avatar_url.startsWith('http') ? testimonial.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${testimonial.avatar_url}`} alt={testimonial.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem' }} />
+                                        <img src={testimonial.avatar_url.startsWith('http') ? testimonial.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${testimonial.avatar_url}`} alt={testimonial.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem' }} loading="lazy" />
                                     ) : (
                                         <i className="uil uil-user-circle" style={{ fontSize: '3rem', color: '#6c63ff', marginBottom: '1rem', display: 'block' }}></i>
                                     )}
@@ -180,6 +180,7 @@ const About = () => {
                             src="/images/jeremie.jpg" 
                             alt="Niyogisubizo Jeremie" 
                             className="biography-image"
+                            loading="lazy"
                             style={{ 
                                 objectFit: 'cover', 
                                 borderRadius: '50%', border: '5px solid #ffffff', 

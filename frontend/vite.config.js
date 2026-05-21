@@ -24,8 +24,11 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
               return 'vendor';
             }
-            if (id.includes('pdfjs-dist')) {
+            if (id.includes('@react-pdf-viewer') || id.includes('pdfjs-dist')) {
               return 'pdf';
+            }
+            if (id.includes('mammoth')) {
+              return 'document-parser';
             }
             if (id.includes('swiper') || id.includes('recharts')) {
               return 'ui';

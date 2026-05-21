@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import Animated3DBackground from '../components/Animated3DBackground';
 import './Home.css';
 
 const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
@@ -148,9 +147,6 @@ const Home = ({ setIsChatOpen }) => {
         <div className="home-page-container">
             {/* Animated Video Hero Section */}
             <section className="hero-video-section">
-                {/* 3D Animated Background */}
-                <Animated3DBackground />
-
                 <div className="hero-slide-overlay">
                     <div className="container hero-content">
                         <h1 className="gradient-text text-white">Welcome to the Educational_Bridge platform</h1>
