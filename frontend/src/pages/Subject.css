@@ -303,24 +303,3 @@
     color: #6c63ff;
 }
 
-/* Responsive PDF Viewer */
-.pdf-viewer-mobile {
-    display: none;
-    width: 100%;
-    height: 100%;
-}
-
-.pdf-viewer-desktop {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-@media screen and (max-width: 768px) {
-    .pdf-viewer-mobile {
-        display: block;
-    }
-    .pdf-viewer-desktop {
-        display: none;
-    }
-}

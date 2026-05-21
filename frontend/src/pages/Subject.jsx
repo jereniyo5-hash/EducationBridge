@@ -62,9 +62,7 @@ const P1_ENGLISH_UNITS = [
     "UNIT 10: Story telling"
 ];
 
-
 import PdfViewer from '../components/PdfViewer';
-
 
 const getResponsivePdfUrl = (url) => {
     if (!url) return '';
@@ -347,18 +345,7 @@ const Subject = () => {
                         <div style={{ flex: 1, width: '100%', position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
                             {/* FRONT: PDF VIEW */}
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', background: '#f5f5f5' }}>
-                                <div className="pdf-viewer-mobile">
-                                    <PdfViewer url={getResponsivePdfUrl(selectedPdfInfo.url)} />
-                                </div>
-                                <div className="pdf-viewer-desktop">
-                                    <iframe 
-                                        src={getResponsivePdfUrl(selectedPdfInfo.url)} 
-                                        width="100%" 
-                                        height="100%" 
-                                        style={{ border: 'none' }} 
-                                        title="PDF Viewer"
-                                    ></iframe>
-                                </div>
+                                <PdfViewer url={getResponsivePdfUrl(selectedPdfInfo.url)} />
                             </div>
                             
                             {/* BACK: ASSESSMENT VIEW */}

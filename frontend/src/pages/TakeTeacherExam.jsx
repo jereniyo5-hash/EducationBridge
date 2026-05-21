@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import './TakeTeacherExam.css';
+import PdfViewer from '../components/PdfViewer';
 
 const TakeTeacherExam = () => {
     const [searchParams] = useSearchParams();
@@ -204,11 +205,9 @@ const TakeTeacherExam = () => {
                             <button className="btn btn-secondary mt-3" onClick={() => navigate('/subject')}>Return to Subjects</button>
                         </div>
                     ) : pdfBlobUrl ? (
-                        <embed
-                            src={`${pdfBlobUrl}#toolbar=0&view=FitH`} 
-                            type="application/pdf"
-                            className="pdf-iframe"
-                        />
+                        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                            <PdfViewer url={pdfBlobUrl} />
+                        </div>
                     ) : (
                         <div className="exam-loading">Loading Exam Paper...</div>
                     )}

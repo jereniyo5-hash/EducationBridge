@@ -87,27 +87,29 @@ const Home = ({ setIsChatOpen }) => {
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         };
 
-        // Execute immediately to set stable height
         handleResize();
-
-        // Add event listener to adjust cleanly if screen flips or resizes
         window.addEventListener('resize', handleResize);
 
-        // Fetch testimonials
-        fetchTestimonials();
+        const abortController = new AbortController();
+        fetchTestimonials(abortController.signal);
 
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            abortController.abort();
+        };
     }, []);
-
-    async function fetchTestimonials() {
+    async function fetchTestimonials(signal = null) {
         try {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
             const endpoint = `${API_URL}/api/testimonials`;
-            const response = await fetch(endpoint);
+            const options = signal ? { signal } : {};
+            const response = await fetch(endpoint, options);
             const data = await response.json();
             if (response.ok && data.testimonials) setTestimonials(data.testimonials);
         } catch (error) {
-            console.error("Failed to fetch testimonials", error);
+            if (error.name !== 'AbortError') {
+                console.error("Failed to fetch testimonials", error);
+            }
         }
     }
 
@@ -225,7 +227,7 @@ const Home = ({ setIsChatOpen }) => {
                     ].map((subject, index) => (
                         <article className="subject-card interactive-card" key={index}>
                             <div className="subject-image-wrapper">
-                                <img src={subject.img} alt={subject.title} className="online-photo" />
+                                <img src={subject.img} alt={subject.title} className="online-photo" loading="lazy" />
                                 <div className="subject-overlay">
                                     <Link to={`/subject?query=${encodeURIComponent(subject.title)}`} className="btn btn-primary small-btn">Take Assessment</Link>
                                 </div>
@@ -292,7 +294,7 @@ const Home = ({ setIsChatOpen }) => {
                                 <article className="testimonial-card interactive-card">
                                     <div className="avatar">
                                         {t.avatar_url ? (
-                                            <img src={t.avatar_url.startsWith('http') ? t.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.avatar_url}`} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                            <img src={t.avatar_url.startsWith('http') ? t.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.avatar_url}`} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} loading="lazy" />
                                         ) : (
                                             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e0e0e0', color: '#555', fontSize: '1.5rem', fontWeight: 'bold', borderRadius: '50%' }}>
                                                 {t.name.charAt(0).toUpperCase()}

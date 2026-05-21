@@ -207,3 +207,27 @@
     align-items: center;
     gap: 8px;
 }
+
+@media screen and (max-width: 768px) {
+    .exam-content-split {
+        flex-direction: column;
+    }
+    
+    .pdf-viewer-container {
+        flex: 1;
+        min-height: 50vh;
+        border-right: none;
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+    }
+
+    .exam-answer-pad {
+        flex: 1;
+        min-height: 40vh;
+    }
+    
+    .exam-top-bar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+}
