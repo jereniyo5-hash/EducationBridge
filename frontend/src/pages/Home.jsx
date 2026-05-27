@@ -188,51 +188,49 @@ const Home = ({ setIsChatOpen }) => {
                         </p>
                     </div>
 
-                    <div className="classes-with-books">
-                        <div className="levels-container text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', flex: 1 }}>
-                            {/* Primary School */}
-                            <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                                <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
-                                <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                    {[1, 2, 3, 4, 5, 6].map((num, idx) => (
-                                        <AnimatedCard 
-                                            key={`p${num}`} 
-                                            title="Primary" 
-                                            prefix="P" 
-                                            num={num} 
-                                            color="var(--accent-yellow, #fbc02d)" 
-                                            subjects="Math, English, Kinyarwanda, SET, SST" 
-                                            delayIndex={idx} 
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                    <div className="download-books-row">
+                        <button className="download-all-books-btn" onClick={() => { setShowBooksModal(true); setBooksView('menu'); }}>
+                            <i className="uil uil-books"></i>
+                            <span>Download All Books</span>
+                            <i className="uil uil-arrow-right"></i>
+                        </button>
+                    </div>
 
-                            {/* Secondary School */}
-                            <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                                <h2 style={{ color: 'var(--accent-blue, #3b82f6)', marginBottom: '1.5rem', borderBottom: '2px solid var(--accent-blue, #3b82f6)', paddingBottom: '0.5rem' }}>Secondary School</h2>
-                                <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                    {[1, 2, 3, 4, 5, 6].map((num, idx) => (
-                                        <AnimatedCard 
-                                            key={`s${num}`} 
-                                            title="Senior" 
-                                            prefix="S" 
-                                            num={num} 
-                                            color="var(--accent-blue, #3b82f6)" 
-                                            subjects="Math, Sciences, Languages, Humanities" 
-                                            delayIndex={idx + 6} 
-                                        />
-                                    ))}
-                                </div>
+                    <div className="levels-container text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center' }}>
+                        {/* Primary School */}
+                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                            <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
+                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                    <AnimatedCard 
+                                        key={`p${num}`} 
+                                        title="Primary" 
+                                        prefix="P" 
+                                        num={num} 
+                                        color="var(--color-primary)" 
+                                        subjects="Math, English, Kinyarwanda, SET, SST" 
+                                        delayIndex={idx} 
+                                    />
+                                ))}
                             </div>
                         </div>
 
-                        <div className="books-sidebar">
-                            <button className="download-all-books-btn" onClick={() => { setShowBooksModal(true); setBooksView('menu'); }}>
-                                <i className="uil uil-books"></i>
-                                <span>Download All Books</span>
-                                <i className="uil uil-arrow-right"></i>
-                            </button>
+                        {/* Secondary School */}
+                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                            <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Secondary School</h2>
+                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                    <AnimatedCard 
+                                        key={`s${num}`} 
+                                        title="Senior" 
+                                        prefix="S" 
+                                        num={num} 
+                                        color="var(--color-primary)" 
+                                        subjects="Math, Sciences, Languages, Humanities" 
+                                        delayIndex={idx + 6} 
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

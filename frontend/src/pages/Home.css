@@ -247,12 +247,13 @@ section {
 .class-card h5 {
     font-size: 1.3rem;
     margin-bottom: 1rem;
-    color: #ffd700;
+    color: #000000;
 }
 
 .class-card p {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: #4a4a4a;
+    font-weight: 500;
 }
 
 /* Subjects Section */
@@ -389,7 +390,7 @@ section {
 
 .class-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 20px 40px rgba(108, 99, 255, 0.3);
 }
 
 /* Chat Modal Styling */
@@ -587,50 +588,41 @@ section {
     display: block;
 }
 
-/* Classes + Books Sidebar Layout */
-.classes-with-books {
+/* Download Books Row (full width, above class cards) */
+.download-books-row {
     display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-}
-
-.books-sidebar {
-    flex-shrink: 0;
-    width: 220px;
-    position: sticky;
-    top: 100px;
+    justify-content: center;
+    margin-bottom: 2.5rem;
 }
 
 .download-all-books-btn {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.8rem;
-    width: 100%;
-    padding: 2rem 1rem;
+    gap: 1rem;
+    padding: 1rem 2.5rem;
     background: linear-gradient(145deg, #6c63ff, #ff4c60);
     border: none;
-    border-radius: 20px;
+    border-radius: 50px;
     color: #fff;
     cursor: pointer;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.1rem;
     box-shadow: 0 10px 30px rgba(108, 99, 255, 0.3);
     transition: all 0.3s ease;
     text-align: center;
 }
 
 .download-all-books-btn:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(108, 99, 255, 0.5);
 }
 
 .download-all-books-btn i:first-child {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
 }
 
 .download-all-books-btn i:last-child {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     transition: transform 0.3s ease;
 }
 
@@ -927,26 +919,38 @@ section {
 }
 
 /* Responsive */
-@media screen and (max-width: 1024px) {
-    .classes-with-books {
-        flex-direction: column;
-    }
-
-    .books-sidebar {
-        width: 100%;
-        position: static;
-    }
-
+@media screen and (max-width: 768px) {
     .download-all-books-btn {
-        flex-direction: row;
-        padding: 1rem 1.5rem;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+        border-radius: 40px;
     }
 
     .download-all-books-btn i:first-child {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .download-all-books-btn i:last-child {
         display: none;
+    }
+
+    .download-books-row {
+        margin-bottom: 1.5rem;
+    }
+
+    .books-modal {
+        max-width: 95vw;
+        max-height: 90vh;
+    }
+
+    .books-menu-btn {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .books-menu-btn i:first-child {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
     }
 }
