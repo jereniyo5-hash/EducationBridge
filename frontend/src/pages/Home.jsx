@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { SUBJECT_PDFS } from '../data/pdfs';
 import './Home.css';
 
 const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
@@ -74,10 +75,25 @@ const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
     );
 };
 
+const getResponsivePdfUrl = (url) => {
+    if (!url) return '';
+    if (url.includes('drive.google.com')) {
+        return url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
+    }
+    if (url.includes('elearning.reb.rw')) {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        return `${API_URL}/api/proxy-pdf?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+};
+
 const Home = ({ setIsChatOpen }) => {
     const [testimonials, setTestimonials] = useState([]);
     const [newTestimonial, setNewTestimonial] = useState({ name: '', role: '', comment: '' });
     const [submitStatus, setSubmitStatus] = useState(null);
+    const [showBooksModal, setShowBooksModal] = useState(false);
+    const [booksView, setBooksView] = useState(null); // 'menu' | 'student' | 'teacher'
+    const [activeBookLevel, setActiveBookLevel] = useState(null);
 
     // JavaScript to ensure the page fits and is physically stable without bouncing or overflow on mobile
     useEffect(() => {
@@ -162,7 +178,7 @@ const Home = ({ setIsChatOpen }) => {
                 </div>
             </section>
 
-            {/* Classes Available */}
+            {/* Classes Available + Download All Books */}
             <section className="classes-section">
                 <div className="container classes-container">
                     <div className="classes-header">
@@ -172,45 +188,129 @@ const Home = ({ setIsChatOpen }) => {
                         </p>
                     </div>
 
-                    <div className="levels-container text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center' }}>
-                        {/* Primary School */}
-                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                            <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
-                                    <AnimatedCard 
-                                        key={`p${num}`} 
-                                        title="Primary" 
-                                        prefix="P" 
-                                        num={num} 
-                                        color="var(--accent-yellow, #fbc02d)" 
-                                        subjects="Math, English, Kinyarwanda, SET, SST" 
-                                        delayIndex={idx} 
-                                    />
-                                ))}
+                    <div className="classes-with-books">
+                        <div className="levels-container text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', flex: 1 }}>
+                            {/* Primary School */}
+                            <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                                <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
+                                <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                                    {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                        <AnimatedCard 
+                                            key={`p${num}`} 
+                                            title="Primary" 
+                                            prefix="P" 
+                                            num={num} 
+                                            color="var(--accent-yellow, #fbc02d)" 
+                                            subjects="Math, English, Kinyarwanda, SET, SST" 
+                                            delayIndex={idx} 
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Secondary School */}
+                            <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                                <h2 style={{ color: 'var(--accent-blue, #3b82f6)', marginBottom: '1.5rem', borderBottom: '2px solid var(--accent-blue, #3b82f6)', paddingBottom: '0.5rem' }}>Secondary School</h2>
+                                <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                                    {[1, 2, 3, 4, 5, 6].map((num, idx) => (
+                                        <AnimatedCard 
+                                            key={`s${num}`} 
+                                            title="Senior" 
+                                            prefix="S" 
+                                            num={num} 
+                                            color="var(--accent-blue, #3b82f6)" 
+                                            subjects="Math, Sciences, Languages, Humanities" 
+                                            delayIndex={idx + 6} 
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
-                        {/* Secondary School */}
-                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                            <h2 style={{ color: 'var(--accent-blue, #3b82f6)', marginBottom: '1.5rem', borderBottom: '2px solid var(--accent-blue, #3b82f6)', paddingBottom: '0.5rem' }}>Secondary School</h2>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
-                                {[1, 2, 3, 4, 5, 6].map((num, idx) => (
-                                    <AnimatedCard 
-                                        key={`s${num}`} 
-                                        title="Senior" 
-                                        prefix="S" 
-                                        num={num} 
-                                        color="var(--accent-blue, #3b82f6)" 
-                                        subjects="Math, Sciences, Languages, Humanities" 
-                                        delayIndex={idx + 6} 
-                                    />
-                                ))}
-                            </div>
+                        <div className="books-sidebar">
+                            <button className="download-all-books-btn" onClick={() => { setShowBooksModal(true); setBooksView('menu'); }}>
+                                <i className="uil uil-books"></i>
+                                <span>Download All Books</span>
+                                <i className="uil uil-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
+
+            {/* Books Modal */}
+            {showBooksModal && (
+                <div className="books-modal-overlay" onClick={() => { setShowBooksModal(false); setBooksView(null); setActiveBookLevel(null); }}>
+                    <div className="books-modal" onClick={e => e.stopPropagation()}>
+                        <div className="books-modal-header">
+                            <h3><i className="uil uil-books"></i> {booksView === 'student' ? `Student's Books${activeBookLevel ? ` - ${activeBookLevel}` : ''}` : booksView === 'teacher' ? "Teacher's Guides" : "Download Books"}</h3>
+                            <button className="books-modal-close" onClick={() => { setShowBooksModal(false); setBooksView(null); setActiveBookLevel(null); }}>
+                                <i className="uil uil-times"></i>
+                            </button>
+                        </div>
+
+                        {booksView === 'menu' && (
+                            <div className="books-menu">
+                                <button className="books-menu-btn student-books" onClick={() => setBooksView('student')}>
+                                    <i className="uil uil-book-open"></i>
+                                    <div>
+                                        <strong>Student's Books</strong>
+                                        <small>All student textbooks by class and subject</small>
+                                    </div>
+                                    <i className="uil uil-arrow-right"></i>
+                                </button>
+                                <button className="books-menu-btn teacher-books" onClick={() => setBooksView('teacher')}>
+                                    <i className="uil uil-presentation-edit"></i>
+                                    <div>
+                                        <strong>Teacher's Guides</strong>
+                                        <small>Teaching guides and answer books</small>
+                                    </div>
+                                    <i className="uil uil-arrow-right"></i>
+                                </button>
+                            </div>
+                        )}
+
+                        {booksView === 'student' && !activeBookLevel && (
+                            <div className="books-level-list">
+                                {Object.keys(SUBJECT_PDFS).map(level => (
+                                    <button key={level} className="books-level-btn" onClick={() => setActiveBookLevel(level)}>
+                                        <i className="uil uil-layer-group"></i>
+                                        <span>{level}</span>
+                                        <span className="books-count">{Object.keys(SUBJECT_PDFS[level]).length} books</span>
+                                        <i className="uil uil-arrow-right"></i>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {booksView === 'student' && activeBookLevel && (
+                            <div className="books-subject-list">
+                                <button className="books-back-btn" onClick={() => setActiveBookLevel(null)}>
+                                    <i className="uil uil-arrow-left"></i> All Levels
+                                </button>
+                                {Object.entries(SUBJECT_PDFS[activeBookLevel] || {}).map(([subject, url]) => (
+                                    <a key={subject} href={getResponsivePdfUrl(url)} target="_blank" rel="noopener noreferrer" className="books-subject-item">
+                                        <i className="uil uil-file-alt"></i>
+                                        <span>{subject}</span>
+                                        <i className="uil uil-download-alt"></i>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+
+                        {booksView === 'teacher' && (
+                            <div className="books-coming-soon">
+                                <i className="uil uil-clock"></i>
+                                <h4>Coming Soon</h4>
+                                <p>Teacher's guides are being prepared and will be available soon.</p>
+                                <button className="btn btn-primary" onClick={() => setBooksView('student')}>
+                                    Browse Student's Books <i className="uil uil-arrow-right"></i>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Popular Subjects */}
             <section className="subjects-section">
