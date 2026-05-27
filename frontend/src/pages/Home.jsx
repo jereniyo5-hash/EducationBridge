@@ -147,6 +147,9 @@ const Home = ({ setIsChatOpen }) => {
         <div className="home-page-container">
             {/* Animated Video Hero Section */}
             <section className="hero-video-section">
+                <video className="hero-video-bg" autoPlay loop muted playsInline>
+                    <source src="/videos/classroom-bg.mp4" type="video/mp4" />
+                </video>
                 <div className="hero-slide-overlay">
                     <div className="container hero-content">
                         <h1 className="gradient-text text-white">Welcome to the Educational_Bridge platform</h1>
