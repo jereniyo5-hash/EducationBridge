@@ -303,3 +303,46 @@
     color: #6c63ff;
 }
 
+/* PDF Viewer Wrapper - fast rendering, smooth scrolling */
+.pdf-viewer-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pdf-viewer-wrapper .rpv-core__viewer {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.pdf-viewer-wrapper .rpv-core__inner-pages {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Download button visible and prominent */
+.pdf-viewer-wrapper .rpv-default-layout__toolbar button[aria-label="Download"] {
+    display: inline-flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Fast initial render - hide flash of unstyled content */
+.pdf-viewer-wrapper .rpv-core__page-layer {
+    contain: layout style paint;
+}
+
+/* Ensure the flip container has proper height and overflow */
+.units-modal .units-modal-header + [style*="flex: 1"] {
+    overflow: hidden;
+    position: relative;
+}
+
+@media screen and (max-width: 768px) {
+    .pdf-viewer-wrapper {
+        height: calc(100dvh - 60px);
+    }
+}
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { LEVELS } from '../data/levels';
 import { SUBJECT_PDFS } from '../data/pdfs';
@@ -108,6 +108,27 @@ const Subject = () => {
             }
         };
         fetchExams();
+
+        // Preload PDF library chunk and worker for instant open
+        const preloadPdf = async () => {
+            try {
+                await import('../components/PdfViewer');
+            } catch (_) { /* ignore */ }
+        };
+        preloadPdf();
+    }, []);
+
+    const prefetchPdf = useCallback((url) => {
+        if (!url) return;
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.as = 'fetch';
+                link.href = getResponsivePdfUrl(url);
+                document.head.appendChild(link);
+            }, { timeout: 3000 });
+        }
     }, []);
 
     const subjectImages = {
@@ -235,13 +256,27 @@ const Subject = () => {
                                                 <p>End unit assessment for {level} — {subject}.</p>
                                                 {SUBJECT_PDFS[level]?.[subject] ? (
                                                     <>
-                                                        <button 
-                                                            onClick={() => setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject })}
-                                                            className="btn btn-primary small-btn w-100 mb-2"
-                                                            style={{ marginBottom: '10px' }}
-                                                        >
-                                                            {subject === "Kinyarwanda" ? "Soma igitabo" : "Open PDF"}
-                                                        </button>
+                                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                                            <button 
+                                                                onClick={() => setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject })}
+                                                                onMouseEnter={() => prefetchPdf(SUBJECT_PDFS[level][subject])}
+                                                                className="btn btn-primary small-btn"
+                                                                style={{ flex: 1, marginBottom: '10px' }}
+                                                            >
+                                                                {subject === "Kinyarwanda" ? "Soma igitabo" : "Open PDF"}
+                                                            </button>
+                                                            <a 
+                                                                href={getResponsivePdfUrl(SUBJECT_PDFS[level][subject])}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="btn btn-primary small-btn"
+                                                                style={{ marginBottom: '10px', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(90deg, #00bf8e, #6c63ff)' }}
+                                                                title="Download PDF"
+                                                                onClick={e => e.stopPropagation()}
+                                                            >
+                                                                <i className="uil uil-download-alt" style={{ fontSize: '1.2rem' }}></i>
+                                                            </a>
+                                                        </div>
                                                         {((level === "Primary 1" && (subject === "Mathematics" || subject === "English" || subject === "Kinyarwanda")) || (level === "Senior 3" && subject === "Mathematics")) ? (
                                                             <button 
                                                                 className="btn btn-secondary small-btn w-100"
@@ -328,9 +363,22 @@ const Subject = () => {
                             >
                                 <i className="uil uil-arrow-left" style={{ fontSize: '1.2rem' }}></i> {isFlipped ? "Back to Book" : "Back to Subjects"}
                             </button>
-                            <h3 className="gradient-text" style={{ margin: 0, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <i className="uil uil-book-open"></i> {selectedPdfInfo.level} - {selectedPdfInfo.subject}
-                            </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <h3 className="gradient-text" style={{ margin: 0, fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <i className="uil uil-book-open"></i> {selectedPdfInfo.level} - {selectedPdfInfo.subject}
+                                </h3>
+                                <a
+                                    href={getResponsivePdfUrl(selectedPdfInfo.url)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn"
+                                    title="Download PDF"
+                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 1rem', borderRadius: '30px', background: 'linear-gradient(90deg, #00bf8e, #6c63ff)', color: '#fff', border: 'none', cursor: 'pointer', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}
+                                    onClick={e => e.stopPropagation()}
+                                >
+                                    <i className="uil uil-download-alt" style={{ fontSize: '1.1rem' }}></i> Download
+                                </a>
+                            </div>
                             <div style={{ display: 'flex', alignItems: 'center', minWidth: '150px', justifyContent: 'flex-end' }}>
                                 {!isFlipped && (
                                     <button 

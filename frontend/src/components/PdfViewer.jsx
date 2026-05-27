@@ -7,7 +7,6 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const PdfViewer = ({ url }) => {
-    // Create new plugin instance
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
     if (!url) {
@@ -15,7 +14,7 @@ const PdfViewer = ({ url }) => {
     }
 
     return (
-        <div style={{ height: '100%', width: '100%' }}>
+        <div className="pdf-viewer-wrapper">
             <Worker workerUrl={pdfWorkerUrl}>
                 <Viewer
                     fileUrl={url}
