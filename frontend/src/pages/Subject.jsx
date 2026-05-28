@@ -347,7 +347,7 @@ const Subject = () => {
             {/* PDF Viewer Modal */}
             {selectedPdfInfo && (
                 <div className="units-modal-overlay" onClick={() => { setSelectedPdfInfo(null); setIsFlipped(false); }} style={{ zIndex: 3000, padding: 0 }}>
-                    <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100dvh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)', perspective: '1500px' }} onClick={e => e.stopPropagation()}>
+                    <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100dvh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)' }} onClick={e => e.stopPropagation()}>
                         <div className="units-modal-header" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--card-bg)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 10 }}>
                             <button 
                                 onClick={() => {
@@ -391,14 +391,8 @@ const Subject = () => {
                                 )}
                             </div>
                         </div>
-                        <div style={{ flex: 1, width: '100%', position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
-                            {/* FRONT: PDF VIEW */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', background: '#f5f5f5' }}>
-                                <PdfViewer url={getResponsivePdfUrl(selectedPdfInfo.url)} />
-                            </div>
-                            
-                            {/* BACK: ASSESSMENT VIEW */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', background: 'var(--bg-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', overflowY: 'auto' }}>
+                        {isFlipped ? (
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', overflowY: 'auto', background: 'var(--bg-color)' }}>
                                 <h2 className="gradient-text" style={{ marginBottom: '2rem', fontSize: '2rem' }}>{selectedPdfInfo.level} {selectedPdfInfo.subject} Assessment</h2>
                                 
                                 {((selectedPdfInfo.level === "Primary 1" && (selectedPdfInfo.subject === "Mathematics" || selectedPdfInfo.subject === "English" || selectedPdfInfo.subject === "Kinyarwanda")) || (selectedPdfInfo.level === "Senior 3" && selectedPdfInfo.subject === "Mathematics")) ? (
@@ -428,7 +422,11 @@ const Subject = () => {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        ) : (
+                            <div style={{ flex: 1, overflow: 'hidden', background: '#f5f5f5' }}>
+                                <PdfViewer url={getResponsivePdfUrl(selectedPdfInfo.url)} />
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
