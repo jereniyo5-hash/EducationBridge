@@ -11,7 +11,6 @@ const About = React.lazy(() => import('./pages/About'));
 const Contact = React.lazy(() => import('./pages/Contact'));
 const HowItWorks = React.lazy(() => import('./pages/HowItWorks'));
 const Subject = React.lazy(() => import('./pages/Subject'));
-const LessonPlan = React.lazy(() => import('./pages/LessonPlan'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Signup = React.lazy(() => import('./pages/Signup'));
 const Assessment = React.lazy(() => import('./pages/Assessment'));
@@ -39,7 +38,6 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} /> 
           <Route path="/subject" element={<Subject />} />
-          <Route path="/lesson-plan" element={<LessonPlan />} />
           <Route path="/assessment" element={<ProtectedRoute><Assessment /></ProtectedRoute>} />
           <Route path="/create-exam" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
           <Route path="/take-exam" element={<ProtectedRoute><TakeTeacherExam /></ProtectedRoute>} />

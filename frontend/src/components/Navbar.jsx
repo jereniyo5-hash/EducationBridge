@@ -101,7 +101,6 @@ const Navbar = ({ setIsChatOpen }) => {
                     <li><Link to="/about" onClick={() => setIsNavShowing(false)}>About</Link></li>
                     <li><Link to="/contact" onClick={() => setIsNavShowing(false)}>Contact</Link></li>
                     <li><Link to="/subject" onClick={() => setIsNavShowing(false)}>Subject</Link></li>
-                    <li><Link to="/lesson-plan" className="nav-btn-link lessonplan-nav-btn" onClick={() => setIsNavShowing(false)}><i className="uil uil-file-edit"></i> Lesson Plan</Link></li>
                     {user && (
                         <li>
                             <Link to={
