@@ -220,40 +220,169 @@ section {
 
 .classes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
 }
 
-.class-card {
-    padding: 2rem;
+/* Level Columns with Gradient Themes */
+.level-column {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    transition: box-shadow 0.3s ease;
+}
+
+.level-column-header {
     text-align: center;
+    margin-bottom: 2rem;
+}
+
+.level-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.6rem;
+    transition: transform 0.3s ease;
+}
+
+.level-column:hover .level-icon-wrap {
+    transform: scale(1.08);
+}
+
+.level-column-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.3rem;
+    letter-spacing: -0.3px;
+}
+
+.level-column-header p {
+    font-size: 0.85rem;
+    margin: 0;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+/* Primary Column - Warm Orange */
+.primary-column {
+    background: linear-gradient(170deg, #fff7ed 0%, #ffffff 100%);
+    border-color: rgba(249, 115, 22, 0.2);
+}
+
+.primary-column .level-icon-wrap {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.25);
+}
+
+.primary-column .level-column-header h2 {
+    color: #c2410c;
+}
+
+.primary-column .level-column-header p {
+    color: #f97316;
+}
+
+.primary-column .class-card {
+    border-color: rgba(249, 115, 22, 0.25) !important;
+}
+
+.primary-column .class-card:hover {
+    border-color: #f97316 !important;
+    box-shadow: 0 12px 32px rgba(249, 115, 22, 0.2) !important;
+}
+
+.primary-column .class-card .class-icon {
+    background: linear-gradient(135deg, #f97316, #fb923c) !important;
+}
+
+/* Secondary Column - Cool Blue */
+.secondary-column {
+    background: linear-gradient(170deg, #eff6ff 0%, #ffffff 100%);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.secondary-column .level-icon-wrap {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+}
+
+.secondary-column .level-column-header h2 {
+    color: #1d4ed8;
+}
+
+.secondary-column .level-column-header p {
+    color: #3b82f6;
+}
+
+.secondary-column .class-card {
+    border-color: rgba(59, 130, 246, 0.25) !important;
+}
+
+.secondary-column .class-card:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2) !important;
+}
+
+.secondary-column .class-card .class-icon {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
+}
+
+/* Class Card Base */
+.class-card {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.class-card:hover {
+    transform: translateY(-6px) !important;
 }
 
 .class-icon {
     width: 50px;
     height: 50px;
-    margin: 0 auto 1.5rem;
-    border-radius: 15px;
-}
-
-.bg-primary {
-    background-color: #6c63ff;
-}
-
-.bg-secondary {
-    background-color: #ff4c60;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
 }
 
 .class-card h5 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
     color: #000000;
+    font-weight: 700;
 }
 
 .class-card p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #4a4a4a;
     font-weight: 500;
+    min-height: 36px;
+}
+
+/* Responsive Columns */
+@media screen and (max-width: 768px) {
+    .level-column {
+        padding: 1.5rem 1rem;
+    }
+
+    .level-column-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .level-icon-wrap {
+        width: 52px;
+        height: 52px;
+        font-size: 1.3rem;
+    }
+
+    .classes-grid {
+        gap: 1rem;
+    }
 }
 
 /* Subjects Section */
@@ -386,11 +515,6 @@ section {
     .hero-video-section {
         height: calc(var(--vh, 1vh) * 55);
     }
-}
-
-.class-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(108, 99, 255, 0.3);
 }
 
 /* Chat Modal Styling */

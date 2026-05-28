@@ -196,18 +196,24 @@ const Home = ({ setIsChatOpen }) => {
                         </button>
                     </div>
 
-                    <div className="levels-container text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center' }}>
+                    <div className="levels-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', justifyContent: 'center' }}>
                         {/* Primary School */}
-                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                            <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Primary School</h2>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                        <div className="level-column primary-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                            <div className="level-column-header">
+                                <div className="level-icon-wrap">
+                                    <i className="uil uil-book-open"></i>
+                                </div>
+                                <h2>Primary School</h2>
+                                <p>Foundation years · P1 – P6</p>
+                            </div>
+                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.2rem' }}>
                                 {[1, 2, 3, 4, 5, 6].map((num, idx) => (
                                     <AnimatedCard 
                                         key={`p${num}`} 
                                         title="Primary" 
                                         prefix="P" 
                                         num={num} 
-                                        color="var(--color-primary)" 
+                                        color="var(--primary-accent)" 
                                         subjects="Math, English, Kinyarwanda, SET, SST" 
                                         delayIndex={idx} 
                                     />
@@ -216,16 +222,22 @@ const Home = ({ setIsChatOpen }) => {
                         </div>
 
                         {/* Secondary School */}
-                        <div className="level-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
-                            <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '0.5rem' }}>Secondary School</h2>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' }}>
+                        <div className="level-column secondary-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                            <div className="level-column-header">
+                                <div className="level-icon-wrap">
+                                    <i className="uil uil-graduation-cap"></i>
+                                </div>
+                                <h2>Secondary School</h2>
+                                <p>Advanced learning · S1 – S6</p>
+                            </div>
+                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.2rem' }}>
                                 {[1, 2, 3, 4, 5, 6].map((num, idx) => (
                                     <AnimatedCard 
                                         key={`s${num}`} 
                                         title="Senior" 
                                         prefix="S" 
                                         num={num} 
-                                        color="var(--color-primary)" 
+                                        color="var(--secondary-accent)" 
                                         subjects="Math, Sciences, Languages, Humanities" 
                                         delayIndex={idx + 6} 
                                     />
