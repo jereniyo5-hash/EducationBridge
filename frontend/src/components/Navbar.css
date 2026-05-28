@@ -101,6 +101,23 @@
     color: white !important;
 }
 
+.lessonplan-nav-btn {
+    background: linear-gradient(135deg, #6c63ff, #00bf8e) !important;
+    color: #fff !important;
+    border-radius: 25px !important;
+    padding: 0.5rem 1.2rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3) !important;
+}
+
+.lessonplan-nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4) !important;
+}
+
 .logout-btn:hover {
     background: #ff4c60;
 }

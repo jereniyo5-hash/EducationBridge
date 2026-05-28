@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import { SUBJECT_PDFS } from '../data/pdfs';
 import './Home.css';
 
-const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
+const AnimatedCard = ({ title, prefix, num, subjects, delayIndex }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [typedText, setTypedText] = useState('');
     const cardRef = useRef(null);
@@ -53,22 +53,16 @@ const AnimatedCard = ({ title, prefix, num, color, subjects, delayIndex }) => {
             onClick={() => navigate(`/subject?level=${encodeURIComponent(title + ' ' + num)}`)}
             className="class-card interactive-card" 
             style={{ 
-                background: '#ffffff', // Pure white background
-                border: `2px solid ${color}`, 
-                borderRadius: '15px', 
-                padding: '1.5rem',
-                color: '#000000',
-                cursor: 'pointer',
-                transition: `transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delayIndex * 0.15}s, opacity 0.6s ease ${delayIndex * 0.15}s, box-shadow 0.3s ease`,
                 opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'perspective(600px) rotateY(0deg)' : 'perspective(600px) rotateY(90deg)'
+                transform: isVisible ? 'perspective(600px) rotateY(0deg)' : 'perspective(600px) rotateY(90deg)',
+                transition: `transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delayIndex * 0.15}s, opacity 0.6s ease ${delayIndex * 0.15}s, box-shadow 0.3s ease`
             }}
         >
-            <div className="class-icon" style={{ background: color, width: '50px', height: '50px', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontWeight: 'bold' }}>
+            <div className="class-icon">
                 {prefix}{num}
             </div>
-            <h5 style={{ color: '#000000', fontWeight: 'bold' }}>{title} {num}</h5>
-            <p style={{ fontSize: '0.85rem', color: '#4a4a4a', minHeight: '40px', marginTop: '10px', fontWeight: '500' }}>
+            <h5>{title} {num}</h5>
+            <p>
                 {typedText}{isVisible && typedText.length < subjects.length ? '|' : ''}
             </p>
         </article>
@@ -196,9 +190,9 @@ const Home = ({ setIsChatOpen }) => {
                         </button>
                     </div>
 
-                    <div className="levels-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', justifyContent: 'center' }}>
+                    <div className="levels-container">
                         {/* Primary School */}
-                        <div className="level-column primary-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                        <div className="level-column primary-column">
                             <div className="level-column-header">
                                 <div className="level-icon-wrap">
                                     <i className="uil uil-book-open"></i>
@@ -206,15 +200,14 @@ const Home = ({ setIsChatOpen }) => {
                                 <h2>Primary School</h2>
                                 <p>Foundation years · P1 – P6</p>
                             </div>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.2rem' }}>
+                            <div className="classes-grid">
                                 {[1, 2, 3, 4, 5, 6].map((num, idx) => (
                                     <AnimatedCard 
                                         key={`p${num}`} 
                                         title="Primary" 
                                         prefix="P" 
                                         num={num} 
-                                        color="var(--primary-accent)" 
-                                        subjects="Math, English, Kinyarwanda, SET, SST" 
+                                        subjects="Math, English, Kinyarwanda, SST" 
                                         delayIndex={idx} 
                                     />
                                 ))}
@@ -222,7 +215,7 @@ const Home = ({ setIsChatOpen }) => {
                         </div>
 
                         {/* Secondary School */}
-                        <div className="level-column secondary-column" style={{ flex: '1 1 45%', minWidth: '300px' }}>
+                        <div className="level-column secondary-column">
                             <div className="level-column-header">
                                 <div className="level-icon-wrap">
                                     <i className="uil uil-graduation-cap"></i>
@@ -230,14 +223,13 @@ const Home = ({ setIsChatOpen }) => {
                                 <h2>Secondary School</h2>
                                 <p>Advanced learning · S1 – S6</p>
                             </div>
-                            <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.2rem' }}>
+                            <div className="classes-grid">
                                 {[1, 2, 3, 4, 5, 6].map((num, idx) => (
                                     <AnimatedCard 
                                         key={`s${num}`} 
                                         title="Senior" 
                                         prefix="S" 
                                         num={num} 
-                                        color="var(--secondary-accent)" 
                                         subjects="Math, Sciences, Languages, Humanities" 
                                         delayIndex={idx + 6} 
                                     />
