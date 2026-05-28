@@ -285,12 +285,15 @@ const Subject = () => {
                                                                 {subject === "Kinyarwanda" ? "Kora isuzuma" : "Take Assessment"}
                                                             </button>
                                                         ) : (
-                                                            <Link 
-                                                                to={`/assessment?level=${encodeURIComponent(level)}&subject=${encodeURIComponent(subject)}`} 
+                                                            <button 
                                                                 className="btn btn-secondary small-btn w-100"
+                                                                onClick={() => { 
+                                                                    setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject });
+                                                                    setIsFlipped(true);
+                                                                }}
                                                             >
                                                                 {subject === "Kinyarwanda" ? "Kora isuzuma" : "Take Assessment"}
-                                                            </Link>
+                                                            </button>
                                                         )}
                                                     </>
                                                 ) : (
