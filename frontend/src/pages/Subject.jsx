@@ -85,6 +85,7 @@ const Subject = () => {
     const [selectedUnitSubject, setSelectedUnitSubject] = useState(null);
     const [selectedPdfInfo, setSelectedPdfInfo] = useState(null);
     const [isFlipped, setIsFlipped] = useState(false);
+    const [pdfLoading, setPdfLoading] = useState(false);
     const [teacherExams, setTeacherExams] = useState([]);
     const [user, setUser] = useState(null);
 
@@ -113,22 +114,35 @@ const Subject = () => {
         const preloadPdf = async () => {
             try {
                 await import('../components/PdfViewer');
+                // Preload the pdfjs worker script after the viewer chunk loads
+                const workerUrl = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).href;
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'prefetch';
+                preloadLink.as = 'script';
+                preloadLink.href = workerUrl;
+                document.head.appendChild(preloadLink);
             } catch (_) { /* ignore */ }
         };
         preloadPdf();
     }, []);
 
+    useEffect(() => {
+        if (selectedPdfInfo) {
+            const timer = setTimeout(() => setPdfLoading(false), 600);
+            return () => clearTimeout(timer);
+        } else {
+            setPdfLoading(false);
+        }
+    }, [selectedPdfInfo]);
+
     const prefetchPdf = useCallback((url) => {
         if (!url) return;
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(() => {
-                const link = document.createElement('link');
-                link.rel = 'prefetch';
-                link.as = 'fetch';
-                link.href = getResponsivePdfUrl(url);
-                document.head.appendChild(link);
-            }, { timeout: 3000 });
-        }
+        // Use preload for higher priority than prefetch
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'fetch';
+        link.href = getResponsivePdfUrl(url);
+        document.head.appendChild(link);
     }, []);
 
     const subjectImages = {
@@ -258,7 +272,7 @@ const Subject = () => {
                                                     <>
                                                         <div style={{ display: 'flex', gap: '8px' }}>
                                                             <button 
-                                                                onClick={() => setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject })}
+                                                                onClick={() => { setPdfLoading(true); setSelectedPdfInfo({ url: SUBJECT_PDFS[level][subject], level, subject }); }}
                                                                 onMouseEnter={() => prefetchPdf(SUBJECT_PDFS[level][subject])}
                                                                 className="btn btn-primary small-btn"
                                                                 style={{ flex: 1, marginBottom: '10px' }}
@@ -349,7 +363,7 @@ const Subject = () => {
 
             {/* PDF Viewer Modal */}
             {selectedPdfInfo && (
-                <div className="units-modal-overlay" onClick={() => { setSelectedPdfInfo(null); setIsFlipped(false); }} style={{ zIndex: 3000, padding: 0 }}>
+                <div className="units-modal-overlay" onClick={() => { setSelectedPdfInfo(null); setIsFlipped(false); setPdfLoading(false); }} style={{ zIndex: 3000, padding: 0 }}>
                     <div className="units-modal" style={{ width: '100vw', maxWidth: '100vw', height: '100dvh', borderRadius: '0', padding: 0, display: 'flex', flexDirection: 'column', background: 'var(--bg-color)' }} onClick={e => e.stopPropagation()}>
                         <div className="units-modal-header" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--card-bg)', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 10 }}>
                             <button 
@@ -424,6 +438,12 @@ const Subject = () => {
                                         </Link>
                                     </div>
                                 )}
+                            </div>
+                        ) : pdfLoading ? (
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', background: '#f5f5f5' }}>
+                                <div className="pdf-loading-spinner" style={{ width: '48px', height: '48px', border: '4px solid #e2e8f0', borderTop: '4px solid #6c63ff', borderRadius: '50%', animation: 'pdfSpin 0.8s linear infinite' }}></div>
+                                <p style={{ color: '#64748b', fontSize: '1rem', fontWeight: 500, margin: 0 }}>Loading book...</p>
+                                <style>{`@keyframes pdfSpin { to { transform: rotate(360deg); } }`}</style>
                             </div>
                         ) : (
                             <div style={{ flex: 1, overflow: 'hidden', background: '#f5f5f5' }}>
