@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import React, { useState, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -50,11 +50,21 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </Suspense>
-      <Suspense fallback={null}>
-        <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
-      </Suspense>
+      <ChatWrapper isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
       <Footer />
     </BrowserRouter>
+  );
+}
+
+function ChatWrapper({ isChatOpen, setIsChatOpen }) {
+  const location = useLocation();
+  const hideOnPaths = ['/assessment', '/create-exam', '/take-exam', '/submissions'];
+  const isExamPage = hideOnPaths.some(p => location.pathname.startsWith(p));
+  if (isExamPage) return null;
+  return (
+    <Suspense fallback={null}>
+      <DeepSeekChat isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
+    </Suspense>
   );
 }
 
