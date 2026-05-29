@@ -87,6 +87,7 @@ const Subject = () => {
     const [isFlipped, setIsFlipped] = useState(false);
     const [pdfLoading, setPdfLoading] = useState(false);
     const [teacherExams, setTeacherExams] = useState([]);
+    const [examsLoading, setExamsLoading] = useState(true);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -96,6 +97,15 @@ const Subject = () => {
             setUser(JSON.parse(storedUser));
         }
         
+        const cached = sessionStorage.getItem('cachedTeacherExams');
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                setTeacherExams(parsed);
+                setExamsLoading(false);
+            } catch (_) {}
+        }
+
         const fetchExams = async () => {
             try {
                 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -103,12 +113,15 @@ const Subject = () => {
                 const data = await response.json();
                 if (data.exams) {
                     setTeacherExams(data.exams);
+                    sessionStorage.setItem('cachedTeacherExams', JSON.stringify(data.exams));
                 }
             } catch (error) {
                 console.error('Error fetching teacher exams:', error);
+            } finally {
+                setExamsLoading(false);
             }
         };
-        fetchExams();
+        if (!cached) fetchExams();
 
         // Preload PDF library chunk and worker for instant open
         const preloadPdf = async () => {
@@ -320,19 +333,24 @@ const Subject = () => {
                                                 )}
 
                                                 {/* Render Teacher Uploaded Exams */}
-                                                {teacherExams
-                                                    .filter(exam => exam.year_level === level && exam.subject_name === subject)
-                                                    .map(exam => (
-                                                        <Link 
-                                                            key={exam.id}
-                                                            to={`/take-exam?examId=${exam.id}`} 
-                                                            className="btn btn-warning small-btn w-100 mt-2"
-                                                            style={{ marginTop: '10px', background: 'linear-gradient(135deg, #FFB75E 0%, #ED8F03 100%)', color: '#fff', border: 'none', fontWeight: 'bold' }}
-                                                        >
-                                                            <i className="uil uil-file-alt"></i> Exam by {exam.teacher_name}
-                                                        </Link>
-                                                    ))
-                                                }
+                                                {examsLoading ? (
+                                                    <div className="exams-loading" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', padding: '0.5rem 0', textAlign: 'center' }}>
+                                                        <i className="uil uil-spinner-alt" style={{ animation: 'spin 1s linear infinite', marginRight: '6px' }}></i> Loading exams...
+                                                    </div>
+                                                ) : (
+                                                    teacherExams
+                                                        .filter(exam => exam.year_level === level && exam.subject_name === subject)
+                                                        .map(exam => (
+                                                            <Link 
+                                                                key={exam.id}
+                                                                to={`/take-exam?examId=${exam.id}`} 
+                                                                className="btn btn-warning small-btn w-100 mt-2"
+                                                                style={{ marginTop: '10px', background: 'linear-gradient(135deg, #FFB75E 0%, #ED8F03 100%)', color: '#fff', border: 'none', fontWeight: 'bold' }}
+                                                            >
+                                                                <i className="uil uil-file-alt"></i> Exam by {exam.teacher_name}
+                                                            </Link>
+                                                        ))
+                                                )}
                                             </div>
                                         </article>
                                     ))}

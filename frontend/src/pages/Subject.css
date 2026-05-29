@@ -334,6 +334,10 @@
     contain: layout style paint;
 }
 
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 @media screen and (max-width: 768px) {
     .pdf-viewer-wrapper {
         height: calc(100dvh - 60px);
